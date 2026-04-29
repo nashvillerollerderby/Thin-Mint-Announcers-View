@@ -1,0 +1,60 @@
+Thin Mint Announcer’s View
+Copyright (C) 2026 Haley "Thin Mint" Stelly,
+              Charlie "KO Belle" Humphreys,
+              Hannah Keyser
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+---
+
+UPSTREAM WORK
+
+This project is designed to operate alongside CRG Scoreboard and is
+informed by its data structures and WebSocket interface.
+
+CRG Scoreboard is developed by the CRG project contributors.
+
+Original project:  CRG Derby Scoreboard
+Source repository: https://github.com/rollerderby/crg
+License:           GNU General Public License v3 (or later)
+
+This project does not directly include or redistribute CRG Scoreboard
+source code, but interacts with it via its public WebSocket interface.
+
+---
+
+ORIGINAL WORK
+
+The following files are original works by the Thin Mint Announcer’s View developers:
+
+  announcers.html  — announcer interface (HTML, CSS, JavaScript)
+
+---
+
+MODIFICATIONS / INTENT
+
+Thin Mint Announcer’s View is a purpose-built companion interface for
+CRG Scoreboard, focused specifically on announcer usability.
+
+Key characteristics include:
+
+  - Simplified, announcer-focused layout prioritizing:
+      jammer identification, lead status, penalties, score, and timing
+  - Dynamic clock switching between jam, lineup, and timeout states
+  - Jam history panel with browser-based persistence
+  - Penalty indicators shown only during active penalty states
+  - Clean score differential display using neutral formatting
+  - Light and dark theme support via URL parameters
+  - Mobile rotation warning for portrait orientation
+  - Designed for internal use, not broadcast output
+
+---
+
+AI ASSISTANCE
+
+AI tools were used during development to assist with research, planning,
+and debugging. All source code in this project was written by human
+developers. AI was not used to generate source code.
