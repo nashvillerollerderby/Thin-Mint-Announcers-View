@@ -18,7 +18,7 @@ This view is designed to strip away the noise and surface the information that a
 - Jam history panel
 - Score differential display
 - Period summary
-- Penalty heats
+- Penalty heat (skaters at elevated risk of a foulout)
 - Light / Dark mode via URL (?theme=)
 
 ---
