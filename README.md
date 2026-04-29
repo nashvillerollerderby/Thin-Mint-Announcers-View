@@ -34,7 +34,7 @@ This view is designed to strip away the noise and surface the information that a
 
 ## Installation
 
-Place the file in your CRG directory:
+Place the **announcers.html** file in your CRG directory:
 ```
 /html/custom/views/announcers.html
 ```
