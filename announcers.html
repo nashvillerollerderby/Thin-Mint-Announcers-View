@@ -1,0 +1,1859 @@
+<!DOCTYPE html>
+<!--
+Thin Mint Announcer’s View
+Copyright (C) 2026 Haley "Thin Mint" Stelly
+
+Designed and developed by (contributors):
+Haley "Thin Mint" Stelly
+Charlie "KO Belle" Humphreys
+Hannah Keyser
+
+Special thanks to:
+Michi-Chan
+Nashville Roller Derby
+Clarksville Roller Derby
+
+Licensed under GNU GPL v3.0
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thin Mint Announcer's View</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;overflow:hidden;font-family:system-ui,-apple-system,sans-serif}
+
+/* ── Theme variables ── */
+body.dark{
+  --bg:#12121f;--bg2:rgba(255,255,255,.06);--bg3:rgba(255,255,255,.03);
+  --border:rgba(255,255,255,.11);--txt:#e8e8f0;--txt2:rgba(255,255,255,.45);--txt3:rgba(255,255,255,.22);
+  --lead-bg:rgba(76,175,125,.18);--lead-c:#7ee8b0;--lead-b:#4caf7d;
+  --lost-bg:rgba(224,92,92,.18);--lost-c:#f09090;--lost-b:#c05050;
+  --call-bg:rgba(240,165,0,.18);--call-c:#ffd066;--call-b:#f0a500;
+  --dim-bg:rgba(255,255,255,.05);--dim-c:rgba(255,255,255,.28);--dim-b:rgba(255,255,255,.10);
+  --warn-bg:rgba(240,140,0,.2);--warn-c:#ffcc44;--warn-b:#cc8800;
+  --danger-bg:rgba(220,50,50,.22);--danger-c:#ff8888;--danger-b:#cc3333;
+  --timeout-bg:rgba(91,155,213,.18);--timeout-c:#90c4f0;--timeout-b:#5b9bd5;
+  --lineup-bg:rgba(160,100,200,.18);--lineup-c:#d4a0f4;--lineup-b:#9060c0;
+  --sp-c:#00d4e8;--star-nil:rgba(255,255,255,.18);
+  --active:#4caf7d;--score:#fff;--sep:rgba(255,255,255,.1);
+}
+body.light{
+  --bg:#eeeef4;--bg2:#fff;--bg3:#f5f5fa;
+  --border:rgba(0,0,0,.10);--txt:#1a1a2e;--txt2:rgba(0,0,0,.45);--txt3:rgba(0,0,0,.20);
+  --lead-bg:rgba(15,110,60,.09);--lead-c:#0a6b3f;--lead-b:#2a9460;
+  --lost-bg:rgba(180,30,30,.08);--lost-c:#8c1c1c;--lost-b:#b03030;
+  --call-bg:rgba(150,90,0,.09);--call-c:#6b4400;--call-b:#aa7000;
+  --dim-bg:rgba(0,0,0,.04);--dim-c:rgba(0,0,0,.32);--dim-b:rgba(0,0,0,.13);
+  --warn-bg:rgba(200,120,0,.10);--warn-c:#7a5200;--warn-b:#bb8800;
+  --danger-bg:rgba(200,30,30,.10);--danger-c:#8c1a1a;--danger-b:#b03030;
+  --timeout-bg:rgba(30,100,180,.09);--timeout-c:#1a5090;--timeout-b:#2060b0;
+  --lineup-bg:rgba(100,50,150,.09);--lineup-c:#6030a0;--lineup-b:#7040b0;
+  --sp-c:#007d8c;--star-nil:rgba(0,0,0,.18);
+  --active:#2a9460;--score:#1a1a2e;--sep:rgba(0,0,0,.10);
+}
+
+/* ── Main app ── */
+#app{width:100vw;height:100vh;padding:8px;display:flex;flex-direction:column;gap:6px;background:var(--bg);}
+
+/* ── Shared primitives ── */
+.hdiv{height:1px;background:var(--sep);width:100%;flex-shrink:0;}
+.vdiv{width:1px;background:var(--sep);flex-shrink:0;}
+.lbl{font-size:7.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--txt2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.badge{font-size:7px;padding:2px 5px;border-radius:3px;font-weight:500;letter-spacing:.04em;white-space:nowrap;flex-shrink:0;}
+.b-lead{background:var(--lead-bg);color:var(--lead-c);border:1px solid var(--lead-b);}
+.b-lost{background:var(--lost-bg);color:var(--lost-c);border:1px solid var(--lost-b);}
+.b-call{background:var(--call-bg);color:var(--call-c);border:1px solid var(--call-b);}
+.b-dim{background:var(--dim-bg);color:var(--dim-c);border:1px solid var(--dim-b);}
+.b-warn{background:var(--warn-bg);color:var(--warn-c);border:1px solid var(--warn-b);}
+.b-danger{background:var(--danger-bg);color:var(--danger-c);border:1px solid var(--danger-b);}
+.b-timeout{background:var(--timeout-bg);color:var(--timeout-c);border:1px solid var(--timeout-b);}
+.b-lineup{background:var(--lineup-bg);color:var(--lineup-c);border:1px solid var(--lineup-b);}
+.box-badge{display:inline-flex;align-items:center;gap:2px;font-size:7px;padding:2px 5px;border-radius:3px;font-weight:500;background:var(--lost-bg);color:var(--lost-c);border:1px solid var(--lost-b);white-space:nowrap;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;}
+.pip{width:6px;height:6px;border-radius:50%;display:inline-block;margin:1px;flex-shrink:0;}
+.pip-on{background:var(--active);}
+.pip-off{background:var(--sep);}
+
+/* ── Top bar ── */
+.topbar{display:flex;gap:6px;flex:0 0 auto;position:relative;}
+.tb-panel{background:var(--bg2);border:1px solid var(--border);border-radius:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4px 8px;min-width:0;overflow:hidden;}
+.tb-panel.clock-jam{border-color:var(--lead-b);background:var(--lead-bg);}
+.tb-panel.clock-lineup{border-color:var(--lineup-b);background:var(--lineup-bg);}
+.tb-panel.clock-timeout{border-color:var(--timeout-b);background:var(--timeout-bg);}
+.tb-big{font-size:24px;font-weight:500;color:var(--score);line-height:1;white-space:nowrap;}
+.tb-sm{font-size:17px;font-weight:500;color:var(--score);line-height:1;white-space:nowrap;}
+
+/* ── Main row ── */
+.mainrow{display:flex;gap:6px;flex:1 1 0;min-height:0;}
+
+/* ── Team panels ── */
+.team-panel{flex:9;background:var(--bg2);border:1px solid var(--border);border-radius:6px;display:flex;flex-direction:column;padding:5px 8px;overflow:hidden;min-width:0;}
+.team-header{display:flex;align-items:center;justify-content:space-between;padding-bottom:3px;flex-shrink:0;overflow:hidden;}
+.team-meta{min-width:0;flex:1;overflow:hidden;}
+.team-name{font-size:10px;color:var(--txt2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.team-score-group{display:flex;align-items:center;gap:8px;flex-shrink:0;margin-left:6px;}
+.star{font-size:28px;line-height:1;transition:color .3s;flex-shrink:0;}
+.star-lead{color:var(--lead-c);}
+.star-sp{color:var(--sp-c);}
+.star-nil{color:var(--star-nil);}
+.team-score{font-size:38px;font-weight:500;color:var(--score);line-height:1;white-space:nowrap;}
+.team-badges{display:flex;gap:3px;padding-bottom:3px;flex-shrink:0;min-height:18px;overflow:hidden;}
+.lineup{flex:1;display:flex;flex-direction:column;justify-content:space-evenly;padding:2px 0;min-height:0;overflow:hidden;}
+.pos-row{display:flex;align-items:center;gap:4px;overflow:hidden;min-width:0;}
+.pos-tag{font-size:7px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--txt2);min-width:34px;flex-shrink:0;}
+.pos-num{font-size:8.5px;color:var(--txt2);min-width:22px;flex-shrink:0;white-space:nowrap;}
+.pos-name{font-size:10px;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0;}
+.pos-right{flex-shrink:0;margin-left:auto;padding-left:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:50%;}
+.team-footer{display:flex;gap:10px;padding-top:4px;align-items:center;flex-shrink:0;overflow:hidden;}
+.pip-group{display:flex;flex-direction:column;gap:1px;flex-shrink:0;}
+.pips{display:flex;}
+.footer-jam{margin-left:auto;text-align:right;flex-shrink:0;}
+.footer-jam-val{font-size:15px;font-weight:500;color:var(--score);white-space:nowrap;}
+
+/* ── Team 2 mirror layout ── */
+.mirror .team-header{flex-direction:row-reverse;}
+.mirror .team-score-group{margin-left:0;margin-right:6px;flex-direction:row-reverse;}
+.mirror .team-meta{text-align:right;}
+.mirror .pos-row{flex-direction:row-reverse;}
+.mirror .pos-right{margin-left:0;margin-right:auto;padding-left:0;padding-right:4px;}
+.mirror .team-footer{flex-direction:row-reverse;}
+.mirror .footer-jam{margin-left:0;margin-right:auto;text-align:left;}
+.mirror .footer-jam .lbl{text-align:left;}
+.mirror .pip-group{align-items:flex-end;}
+.mirror .team-badges{flex-direction:row-reverse;}
+.mirror .pos-name{text-align:right;}
+.mirror .pos-num{text-align:right;}
+.mirror .pos-tag{text-align:right;}
+
+/* ── Center panel ── */
+.center-panel{flex:5;background:var(--bg2);border:1px solid var(--border);border-radius:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6px 10px;min-width:0;overflow:hidden;}
+.diff-block{text-align:center;padding-bottom:6px;width:100%;overflow:hidden;}
+.diff-val{font-size:30px;font-weight:500;color:var(--score);line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.diff-sub{font-size:9px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.state-block{text-align:center;padding:5px 0;width:100%;overflow:hidden;}
+.pen-block{padding-top:5px;width:100%;overflow:hidden;}
+.pen-row{display:flex;align-items:center;gap:6px;padding:2.5px 0;overflow:hidden;}
+.pen-num{width:18px;height:18px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:9px;font-weight:500;flex-shrink:0;}
+.pen-warn{background:var(--warn-bg);color:var(--warn-c);border:1px solid var(--warn-b);}
+.pen-danger{background:var(--danger-bg);color:var(--danger-c);border:1px solid var(--danger-b);}
+.pen-team{font-size:8px;color:var(--txt2);min-width:16px;flex-shrink:0;}
+.pen-name{font-size:9.5px;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0;}
+
+/* ── Bottom row ── */
+.bottomrow{display:flex;gap:0;flex:0 0 auto;align-items:stretch;}
+.hist-panel{flex:7;background:var(--bg2);border:1px solid var(--border);border-radius:6px 0 0 6px;padding:4px 8px;display:flex;flex-direction:column;min-width:0;overflow:hidden;}
+.period-panel{flex:4;background:var(--bg2);border:1px solid var(--border);border-left:none;border-radius:0 6px 6px 0;padding:4px 10px;display:flex;flex-direction:column;justify-content:center;min-width:0;overflow:hidden;}
+.bottom-vdiv{width:1px;background:var(--sep);flex-shrink:0;align-self:stretch;}
+.hist-rows{display:flex;flex-direction:column;gap:2px;width:100%;overflow-y:auto;flex:1;min-height:0;}
+.jam-row{display:flex;align-items:center;gap:5px;padding:2px 5px;border-radius:4px;overflow:hidden;}
+.jam-row.hi{background:var(--bg2);}
+.jam-row.lo{background:var(--bg3);}
+.jam-num{font-size:8.5px;color:var(--txt2);min-width:16px;flex-shrink:0;white-space:nowrap;}
+.jam-micro-div{width:1px;background:var(--sep);height:11px;flex-shrink:0;}
+.jam-scores{font-size:8.5px;min-width:54px;flex-shrink:0;white-space:nowrap;color:var(--txt);}
+.jam-scorer{font-size:8.5px;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0;}
+.jam-outcome{flex-shrink:0;margin-left:auto;padding-left:4px;display:flex;align-items:center;}
+.per-grid{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:2px 10px;width:100%;overflow:hidden;}
+.per-row-lbl{font-size:7.5px;color:var(--txt2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.per-val{font-size:11px;font-weight:500;text-align:center;white-space:nowrap;}
+.per-sep{grid-column:1/-1;height:1px;background:var(--sep);}
+.per-hdr{font-size:7px;text-align:center;white-space:nowrap;}
+
+/* ── Status bar ── */
+
+.sdot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.sdot-ok{background:var(--lead-c);}
+.sdot-demo{background:var(--warn-c);}
+.sdot-err{background:var(--lost-c);}
+.sdot-conn{background:var(--call-c);}
+.stxt{font-size:9px;color:var(--txt3);white-space:nowrap;}
+
+/* ── Disconnect overlay ── */
+#disc{display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);align-items:center;justify-content:center;z-index:90;flex-direction:column;gap:1rem;}
+#disc.show{display:flex;}
+#disc p{color:#fff;font-size:16px;}
+#disc button{padding:8px 20px;border-radius:8px;border:1px solid var(--lead-b);background:var(--lead-bg);color:var(--lead-c);font-size:14px;cursor:pointer;font-family:inherit;}
+
+/* 
+  Ladies and Gentlemen, Gays and Theys--Welcome to the Thin Mint Announcer View
+  A compact little CRG readout for the folks on mic.
+
+  The first CSS block is the plain/base layout. This second block is the
+  "trackside console" skin layered over it.
+*/
+html,body{
+  font-family:"Inter", "Aptos", "Segoe UI", system-ui, -apple-system, sans-serif;
+  letter-spacing:.005em;
+}
+body.dark{
+  --bg:#080b10;
+  --bg2:linear-gradient(180deg,rgba(31,39,49,.92),rgba(17,22,29,.92));
+  --bg3:rgba(255,255,255,.045);
+  --border:rgba(166,206,226,.18);
+  --txt:#f2f7fb;
+  --txt2:rgba(225,238,246,.62);
+  --txt3:rgba(225,238,246,.34);
+  --lead-bg:rgba(120,255,184,.14);
+  --lead-c:#8dffbd;
+  --lead-b:#37d27d;
+  --lost-bg:rgba(255,92,92,.14);
+  --lost-c:#ff9b9b;
+  --lost-b:#e05d5d;
+  --call-bg:rgba(255,195,77,.14);
+  --call-c:#ffd56f;
+  --call-b:#e7a925;
+  --dim-bg:rgba(255,255,255,.055);
+  --dim-c:rgba(235,244,250,.43);
+  --dim-b:rgba(235,244,250,.13);
+  --warn-bg:rgba(255,176,68,.16);
+  --warn-c:#ffd17a;
+  --warn-b:#d7922e;
+  --danger-bg:rgba(255,67,67,.17);
+  --danger-c:#ff9797;
+  --danger-b:#df4b4b;
+  --timeout-bg:rgba(64,190,255,.13);
+  --timeout-c:#9cdcfe;
+  --timeout-b:#3ba4d9;
+  --lineup-bg:rgba(184,130,255,.13);
+  --lineup-c:#d7b7ff;
+  --lineup-b:#9565d8;
+  --sp-c:#51e7ff;
+  --star-nil:rgba(255,255,255,.18);
+  --active:#8dffbd;
+  --score:#ffffff;
+  --sep:rgba(190,225,240,.12);
+  --panel-shadow:0 10px 22px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.04);
+  --panel-edge:rgba(255,255,255,.055);
+}
+body.light{
+  --bg:#e8edf2;
+  --bg2:linear-gradient(180deg,rgba(255,255,255,.98),rgba(242,246,249,.98));
+  --bg3:rgba(15,34,48,.045);
+  --border:rgba(27,55,73,.16);
+  --txt:#14212d;
+  --txt2:rgba(20,33,45,.58);
+  --txt3:rgba(20,33,45,.31);
+  --lead-bg:rgba(14,132,72,.095);
+  --lead-c:#087142;
+  --lead-b:#15975b;
+  --lost-bg:rgba(200,36,36,.08);
+  --lost-c:#8f1e1e;
+  --lost-b:#bd3b3b;
+  --call-bg:rgba(188,116,0,.09);
+  --call-c:#795000;
+  --call-b:#bb7b08;
+  --dim-bg:rgba(10,30,45,.045);
+  --dim-c:rgba(20,33,45,.42);
+  --dim-b:rgba(20,33,45,.14);
+  --warn-bg:rgba(215,135,18,.10);
+  --warn-c:#805600;
+  --warn-b:#bd8200;
+  --danger-bg:rgba(210,38,38,.09);
+  --danger-c:#922020;
+  --danger-b:#bb3d3d;
+  --timeout-bg:rgba(28,123,193,.085);
+  --timeout-c:#1b5f93;
+  --timeout-b:#2b78b4;
+  --lineup-bg:rgba(104,67,170,.085);
+  --lineup-c:#5b3599;
+  --lineup-b:#704bb6;
+  --sp-c:#007c8d;
+  --star-nil:rgba(20,33,45,.20);
+  --active:#15975b;
+  --score:#101923;
+  --sep:rgba(27,55,73,.13);
+  --panel-shadow:0 10px 20px rgba(45,64,78,.13), inset 0 1px 0 rgba(255,255,255,.75);
+  --panel-edge:rgba(255,255,255,.86);
+}
+#app{
+  /* tuned by eye for a 16:9 browser source */
+  padding:10px;
+  gap:8px;
+  background:
+    radial-gradient(circle at 18% -10%, rgba(81,231,255,.16), transparent 30%),
+    radial-gradient(circle at 86% 108%, rgba(141,255,189,.13), transparent 33%),
+    linear-gradient(135deg, var(--bg), var(--bg));
+}
+body.light #app{
+  background:
+    radial-gradient(circle at 18% -10%, rgba(0,124,141,.10), transparent 30%),
+    radial-gradient(circle at 86% 108%, rgba(21,151,91,.10), transparent 33%),
+    linear-gradient(135deg, var(--bg), var(--bg));
+}
+.cfg-card,.tb-panel,.team-panel,.center-panel,.hist-panel,.period-panel{
+  border-radius:12px;
+  box-shadow:var(--panel-shadow);
+  position:relative;
+}
+.cfg-card::before,.tb-panel::before,.team-panel::before,.center-panel::before,.hist-panel::before,.period-panel::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:inherit;
+  pointer-events:none;
+  border:1px solid var(--panel-edge);
+}
+.cfg-card{
+  width:370px;
+  padding:2.1rem 2.25rem;
+  border-color:var(--border);
+  background:var(--bg2);
+}
+.cfg-title h1{
+  font-weight:800;
+  letter-spacing:-.025em;
+  text-transform:uppercase;
+}
+.cfg-sub{font-size:12.5px;color:var(--txt2)}
+.cfg-field label,.lbl{
+  font-weight:800;
+  letter-spacing:.135em;
+}
+.cfg-field input,.cfg-btn{
+  border-radius:10px;
+}
+.cfg-btn.primary{
+  box-shadow:0 0 0 1px rgba(255,255,255,.08) inset;
+}
+.topbar,.mainrow{gap:8px;}
+.tb-panel,.team-panel,.center-panel,.hist-panel,.period-panel{
+  background:var(--bg2);
+  border-color:var(--border);
+}
+.tb-panel{
+  min-height:58px;
+  padding:6px 10px;
+  overflow:hidden;
+}
+.tb-panel.clock-jam,.tb-panel.clock-lineup,.tb-panel.clock-timeout{
+  box-shadow:var(--panel-shadow), 0 0 20px rgba(141,255,189,.08);
+}
+.tb-panel.clock-lineup{box-shadow:var(--panel-shadow), 0 0 20px rgba(184,130,255,.08);}
+.tb-panel.clock-timeout{box-shadow:var(--panel-shadow), 0 0 20px rgba(64,190,255,.08);}
+.tb-big,.team-score,.diff-val{
+  font-weight:900;
+  letter-spacing:-.055em;
+  font-variant-numeric:tabular-nums lining-nums;
+}
+.tb-big{font-size:27px;}
+.tb-sm{font-weight:850;font-size:18px;font-variant-numeric:tabular-nums lining-nums;}
+.team-panel{
+  padding:7px 10px;
+  border-radius:14px;
+}
+.team-header{
+  padding-bottom:5px;
+}
+.team-name{
+  font-size:12px;
+  font-weight:750;
+  color:var(--txt);
+  letter-spacing:.01em;
+}
+.team-score-group{gap:10px;}
+.star{
+  font-size:31px;
+  filter:drop-shadow(0 0 8px currentColor);
+}
+.star-nil{filter:none;}
+.team-score{font-size:43px;}
+.team-badges{min-height:20px;gap:5px;}
+.badge,.box-badge{
+  border-radius:999px;
+  text-transform:uppercase;
+  font-weight:850;
+  letter-spacing:.08em;
+  padding:3px 7px;
+}
+.box-badge{font-size:7.5px;}
+.lineup{
+  padding:5px 0;
+}
+.pos-row{
+  min-height:19px;
+  gap:6px;
+}
+.pos-tag{
+  min-width:45px;
+  font-size:7px;
+  font-weight:900;
+  color:var(--txt3);
+}
+.pos-num{
+  min-width:28px;
+  font-size:9px;
+  color:var(--txt2);
+  font-variant-numeric:tabular-nums lining-nums;
+}
+.pos-name{
+  font-size:11px;
+  font-weight:650;
+}
+.pos-row:first-child .pos-name{
+  /* announcers need the jammer first */
+  font-size:12px;
+  font-weight:850;
+}
+.pos-row:first-child .pos-tag{color:var(--lead-c);}
+.team-footer{
+  padding-top:6px;
+}
+.pip{
+  width:8px;
+  height:8px;
+  border-radius:2px;
+  transform:skewX(-12deg);
+}
+.pip-on{box-shadow:0 0 7px var(--active);}
+.footer-jam-val{
+  font-size:18px;
+  font-weight:900;
+  font-variant-numeric:tabular-nums lining-nums;
+}
+.center-panel{
+  border-radius:16px;
+  padding:8px 12px;
+}
+.diff-val{font-size:34px;}
+.diff-sub{font-weight:800;color:var(--txt2);}
+.pen-row{
+  border-radius:8px;
+  padding:4px 5px;
+  background:var(--bg3);
+  margin-bottom:3px;
+}
+.pen-num{
+  border-radius:7px;
+  font-weight:900;
+}
+.pen-name{font-weight:650;}
+.hist-panel{
+  border-radius:12px 0 0 12px;
+  padding:6px 10px;
+}
+.period-panel{
+  border-radius:0 12px 12px 0;
+  padding:6px 12px;
+}
+.jam-row{
+  border-radius:9px;
+  padding:3px 7px;
+  border:1px solid transparent;
+  align-items:center;
+}
+.jam-row.hi{background:rgba(255,255,255,.055);border-color:var(--sep);}
+body.light .jam-row.hi{background:rgba(15,34,48,.045);}
+.jam-row.lo{background:transparent;}
+.jam-num,.jam-scores,.jam-scorer{
+  font-size:9px;
+  font-weight:650;
+}
+.per-val{
+  font-weight:850;
+  font-variant-numeric:tabular-nums lining-nums;
+}
+.per-hdr,.per-row-lbl{font-weight:850;letter-spacing:.08em;text-transform:uppercase;}
+.hdiv,.vdiv,.bottom-vdiv,.per-sep,.jam-micro-div{opacity:.75;}
+
+body.light 
+.sdot{width:7px;height:7px;box-shadow:0 0 8px currentColor;}
+.stxt{font-weight:700;}
+#disc{
+  backdrop-filter:blur(8px);
+  background:rgba(0,0,0,.68);
+}
+#disc p{font-weight:800;letter-spacing:-.01em;}
+#disc button{border-radius:999px;font-weight:800;}
+@media (max-width:900px){
+  #app{padding:7px;gap:6px;}
+  .topbar,.mainrow{gap:6px;}
+  .tb-big{font-size:23px;}
+  .team-score{font-size:37px;}
+  .diff-val{font-size:29px;}
+  .team-panel{padding:6px 8px;}
+  .pos-tag{min-width:39px;}
+}
+
+/* ── Phone portrait rotate warning ── */
+#rotate-warning{
+  display:none;
+  position:fixed;
+  inset:0;
+  z-index:10000;
+  background:#b00000;
+  color:#fff;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:24px;
+  font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+.rotate-warning-inner{
+  max-width:320px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:12px;
+}
+.rotate-warning-icon{
+  font-size:54px;
+  line-height:1;
+}
+.rotate-warning-title{
+  font-size:24px;
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+}
+.rotate-warning-copy{
+  font-size:15px;
+  font-weight:650;
+  line-height:1.4;
+  opacity:.92;
+}
+@media (max-width:900px) and (orientation:portrait){
+  #rotate-warning{display:flex;}
+}
+
+/* ── 133% baseline viewing scale ──
+   Matches the look of browser zoom set to 133% while preserving the
+   original styled layout and connect screen sizing. */
+:root{
+  --baseline-zoom:1.33;
+}
+#app{
+  width:calc(100vw / var(--baseline-zoom));
+  height:calc(100vh / var(--baseline-zoom));
+  transform:scale(var(--baseline-zoom));
+  transform-origin:top left;
+}
+
+#disc{
+  width:calc(100vw / var(--baseline-zoom));
+  height:calc(100vh / var(--baseline-zoom));
+  transform:scale(var(--baseline-zoom));
+  transform-origin:top left;
+}
+@media (max-width:900px){
+  :root{
+    --baseline-zoom:1.18;
+  }
+}
+@media (max-width:900px) and (orientation:portrait){
+  :root{
+    --baseline-zoom:1;
+  }
+}
+
+
+/* ── Remote mode ── */
+.remote-only { display: none !important; }
+body.remote .remote-only { display: flex !important; }
+
+/* ── Config screen (remote mode only) ── */
+#cfg {
+  position: fixed; inset: 0; z-index: 200;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--bg);
+}
+#cfg[hidden] { display: none !important; }
+.cfg-card {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: 10px;
+  padding: 28px 32px; width: 320px; display: flex; flex-direction: column; gap: 14px;
+}
+.cfg-title { display: flex; align-items: center; gap: 12px; }
+.cfg-title-icon { font-size: 36px; line-height: 1; flex-shrink: 0; }
+.cfg-title-text { font-size: 18px; font-weight: 800; color: var(--txt); line-height: 1.2; text-transform: uppercase; letter-spacing: .01em; }
+.cfg-title h1 { font-size: 18px; font-weight: 800; color: var(--txt); white-space: nowrap; }
+.cfg-sub { font-size: 12px; color: var(--txt2); margin-top: -8px; }
+.cfg-field { display: flex; flex-direction: column; gap: 4px; }
+.cfg-field label { font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .07em; color: var(--txt2); }
+.cfg-field input {
+  background: var(--bg3); border: 1px solid var(--border); border-radius: 5px;
+  color: var(--txt); font-size: 13px; padding: 7px 10px; outline: none;
+  font-family: inherit;
+}
+.cfg-field input:focus { border-color: var(--lead-b); }
+.cfg-btn {
+  padding: 9px 0; border-radius: 6px; border: 1px solid var(--border);
+  background: var(--bg3); color: var(--txt); font-size: 13px; font-weight: 700;
+  cursor: pointer; font-family: inherit; transition: background .15s;
+}
+.cfg-btn.primary {
+  background: var(--lead-b); border-color: var(--lead-b); color: #fff;
+}
+.cfg-btn.primary:hover { filter: brightness(1.15); }
+.cfg-err { font-size: 11px; color: var(--lost-c); min-height: 16px; }
+.cfg-footer { display: flex; justify-content: space-between; align-items: center;
+  font-size: 10px; color: var(--txt3); padding-top: 4px; }
+
+/* ── Connection badge (topbar, remote mode) ── */
+.conn-badge {
+  position: absolute;
+  top: -1px; right: -1px;
+  align-items: center; gap: 6px;
+  padding: 5px 10px 5px 8px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 0 6px 0 8px;
+  flex-shrink: 0;
+  z-index: 10;
+}
+.sdot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+  box-shadow: 0 0 7px currentColor; }
+.sdot-ok   { background: var(--lead-c);    color: var(--lead-c); }
+.sdot-demo { background: var(--warn-c);    color: var(--warn-c); }
+.sdot-err  { background: var(--lost-c);    color: var(--lost-c); }
+.sdot-conn { background: var(--call-c);    color: var(--call-c); }
+.stxt { font-size: 10px; color: var(--txt); white-space: nowrap; font-weight: 700; }
+
+/* ── Disconnect overlay ── */
+/* localhost: never cover the view; remote: show on drop */
+body:not(.remote) #disc { display: none !important; }
+
+</style>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🟤</text></svg>">
+</head>
+<body class="dark">
+
+<!-- Phone portrait rotate warning -->
+<div id="rotate-warning" aria-live="polite">
+  <div class="rotate-warning-inner">
+    <div class="rotate-warning-icon">↻</div>
+    <div class="rotate-warning-title">Rotate Screen</div>
+    <div class="rotate-warning-copy">This announcer view is designed for landscape. Please turn your phone sideways.</div>
+  </div>
+</div>
+
+<!-- ══ REMOTE CONNECTION SCREEN ══ -->
+<div id="cfg" hidden>
+  <div class="cfg-card">
+    <div class="cfg-title">
+      <span class="cfg-title-icon">🟤</span>
+      <div class="cfg-title-text">
+        <div>Thin Mint</div>
+        <div>Announcer's View</div>
+      </div>
+    </div>
+    <p class="cfg-sub">Connect to a CRG Scoreboard</p>
+    <div class="cfg-field">
+      <label for="cfg-host">Host</label>
+      <input id="cfg-host" type="text" placeholder="192.168.1.x" autocomplete="off" spellcheck="false" onkeydown="if(event.key==='Enter')cfgConnect()">
+    </div>
+    <div class="cfg-field">
+      <label for="cfg-port">Port</label>
+      <input id="cfg-port" type="text" value="8000" autocomplete="off" onkeydown="if(event.key==='Enter')cfgConnect()">
+    </div>
+    <button class="cfg-btn primary" onclick="cfgConnect()">Connect</button>
+    <div class="cfg-err" id="cfg-err"></div>
+    <div class="cfg-footer">
+      <span>Another ✨Thin Mintovation✨</span>
+      <span>v1.0.0</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MAIN APP ══ -->
+<div id="app" hidden>
+
+  <!-- TOP BAR: Period clock | Period # ‖ Jam # | Jam/Lineup/Timeout clock -->
+  <div class="topbar">
+    <div class="tb-panel" style="flex:2" id="pclk-panel">
+      <div class="lbl" style="text-align:center;">Period clock</div>
+      <div class="tb-big" id="period-clock">30:00</div>
+    </div>
+    <div class="tb-panel" style="flex:1">
+      <div class="lbl" style="text-align:center;">Period</div>
+      <div class="tb-sm" id="period-num">—</div>
+    </div>
+    <div class="vdiv" style="align-self:stretch;"></div>
+    <div class="tb-panel" style="flex:1">
+      <div class="lbl" style="text-align:center;">Jam #</div>
+      <div class="tb-sm" id="jam-num">—</div>
+    </div>
+    <div class="tb-panel" style="flex:2" id="jclk-panel">
+      <div class="lbl" style="text-align:center;" id="jclk-lbl">Jam clock</div>
+      <div class="tb-big" id="jam-clock">2:00</div>
+    </div>
+    <div class="conn-badge remote-only" id="conn-badge">
+      <span class="sdot sdot-conn" id="sdot"></span>
+      <span class="stxt" id="stxt">—</span>
+    </div>
+  </div>
+
+  <!-- MAIN ROW -->
+  <div class="mainrow">
+
+    <!-- TEAM 1 -->
+    <div class="team-panel">
+      <div class="team-header">
+        <div class="team-meta">
+          <div class="lbl">Team 1</div>
+          <div class="team-name" id="t1-name">—</div>
+        </div>
+        <div class="team-score-group">
+          <span class="star star-nil" id="t1-star">★</span>
+          <div class="team-score" id="t1-score">0</div>
+        </div>
+      </div>
+      <div class="team-badges" id="t1-badges"></div>
+      <div class="hdiv"></div>
+      <div class="lineup">
+        <div class="pos-row">
+          <span class="pos-tag">Jammer</span>
+          <span class="pos-num" id="t1-j-num">#—</span>
+          <span class="pos-name" id="t1-j-name">—</span>
+          <span class="pos-right" id="t1-j-trip"></span>
+        </div>
+        <div class="hdiv"></div>
+        <div class="pos-row">
+          <span class="pos-tag" id="t1-p-lbl">Pivot</span>
+          <span class="pos-num" id="t1-p-num">#—</span>
+          <span class="pos-name" id="t1-p-name">—</span>
+          <span class="pos-right" id="t1-p-box"></span>
+        </div>
+        <div class="pos-row">
+          <span class="pos-tag">Blocker</span>
+          <span class="pos-num" id="t1-b1-num">#—</span>
+          <span class="pos-name" id="t1-b1-name">—</span>
+          <span class="pos-right" id="t1-b1-box"></span>
+        </div>
+        <div class="pos-row">
+          <span class="pos-tag">Blocker</span>
+          <span class="pos-num" id="t1-b2-num">#—</span>
+          <span class="pos-name" id="t1-b2-name">—</span>
+          <span class="pos-right" id="t1-b2-box"></span>
+        </div>
+        <div class="pos-row">
+          <span class="pos-tag">Blocker</span>
+          <span class="pos-num" id="t1-b3-num">#—</span>
+          <span class="pos-name" id="t1-b3-name">—</span>
+          <span class="pos-right" id="t1-b3-box"></span>
+        </div>
+      </div>
+      <div class="hdiv"></div>
+      <div class="team-footer">
+        <div class="pip-group"><div class="lbl">Timeouts</div><div class="pips" id="t1-timeouts"></div></div>
+        <div class="pip-group"><div class="lbl">OR</div><div class="pips" id="t1-or"></div></div>
+        <div class="footer-jam">
+          <div class="lbl">Jam score</div>
+          <div class="footer-jam-val" id="t1-jam-score">0</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="vdiv" style="align-self:stretch;"></div>
+
+    <!-- CENTER PANEL -->
+    <div class="center-panel">
+      <div class="diff-block">
+        <div class="lbl" style="text-align:center;margin-bottom:2px;">Differential</div>
+        <div class="diff-val" id="differential">0</div>
+        <div class="diff-sub" id="diff-leader">&nbsp;</div>
+      </div>
+      <div class="hdiv"></div>
+      <div class="state-block">
+        <div class="lbl" style="text-align:center;margin-bottom:4px;">State</div>
+        <span class="badge b-dim" id="state-badge">—</span>
+      </div>
+      <div class="hdiv"></div>
+      <div class="pen-block">
+        <div class="lbl" style="margin-bottom:5px;">Penalty heat</div>
+        <div id="pen-heat"></div>
+      </div>
+    </div>
+
+    <div class="vdiv" style="align-self:stretch;"></div>
+
+    <!-- TEAM 2 -->
+    <div class="team-panel mirror">
+      <div class="team-header">
+        <div class="team-meta">
+          <div class="lbl">Team 2</div>
+          <div class="team-name" id="t2-name">—</div>
+        </div>
+        <div class="team-score-group">
+          <span class="star star-nil" id="t2-star">★</span>
+          <div class="team-score" id="t2-score">0</div>
+        </div>
+      </div>
+      <div class="team-badges" id="t2-badges"></div>
+      <div class="hdiv"></div>
+      <div class="lineup">
+        <div class="pos-row">
+          <span class="pos-tag">Jammer</span>
+          <span class="pos-num" id="t2-j-num">#—</span>
+          <span class="pos-name" id="t2-j-name">—</span>
+          <span class="pos-right" id="t2-j-trip"></span>
+        </div>
+        <div class="hdiv"></div>
+        <div class="pos-row">
+          <span class="pos-tag" id="t2-p-lbl">Pivot</span>
+          <span class="pos-num" id="t2-p-num">#—</span>
+          <span class="pos-name" id="t2-p-name">—</span>
+          <span class="pos-right" id="t2-p-box"></span>
+        </div>
+        <div class="pos-row">
+          <span class="pos-tag">Blocker</span>
+          <span class="pos-num" id="t2-b1-num">#—</span>
+          <span class="pos-name" id="t2-b1-name">—</span>
+          <span class="pos-right" id="t2-b1-box"></span>
+        </div>
+        <div class="pos-row">
+          <span class="pos-tag">Blocker</span>
+          <span class="pos-num" id="t2-b2-num">#—</span>
+          <span class="pos-name" id="t2-b2-name">—</span>
+          <span class="pos-right" id="t2-b2-box"></span>
+        </div>
+        <div class="pos-row">
+          <span class="pos-tag">Blocker</span>
+          <span class="pos-num" id="t2-b3-num">#—</span>
+          <span class="pos-name" id="t2-b3-name">—</span>
+          <span class="pos-right" id="t2-b3-box"></span>
+        </div>
+      </div>
+      <div class="hdiv"></div>
+      <div class="team-footer">
+        <div class="pip-group"><div class="lbl">Timeouts</div><div class="pips" id="t2-timeouts"></div></div>
+        <div class="pip-group"><div class="lbl">OR</div><div class="pips" id="t2-or"></div></div>
+        <div class="footer-jam">
+          <div class="lbl">Jam score</div>
+          <div class="footer-jam-val" id="t2-jam-score">0</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- BOTTOM ROW: jam history | divider | period summary -->
+  <div class="bottomrow">
+    <div class="hist-panel">
+      <div class="lbl" style="margin-bottom:3px;">Jam history</div>
+      <div class="hist-rows" id="jam-history"></div>
+    </div>
+    <div class="bottom-vdiv"></div>
+    <div class="period-panel">
+      <div class="lbl" style="margin-bottom:4px;" id="per-lbl">Period 1 summary</div>
+      <div class="per-grid">
+        <div></div>
+        <div class="per-hdr" style="color:var(--lead-c);" id="per-t1-hdr">T1</div>
+        <div class="per-hdr" style="color:var(--txt2);">T2</div>
+        <div class="per-row-lbl">Penalties</div>
+        <div class="per-val" style="color:var(--txt);" id="per-t1-pen">0</div>
+        <div class="per-val" style="color:var(--txt);" id="per-t2-pen">0</div>
+        <div class="per-sep"></div>
+        <div class="per-row-lbl">Lead jams</div>
+        <div class="per-val" style="color:var(--txt);" id="per-t1-lead">0</div>
+        <div class="per-val" style="color:var(--txt);" id="per-t2-lead">0</div>
+        <div class="per-sep"></div>
+        <div class="per-row-lbl">Power jams</div>
+        <div class="per-val" style="color:var(--txt);" id="per-t1-pj">0</div>
+        <div class="per-val" style="color:var(--txt);" id="per-t2-pj">0</div>
+        <div class="per-sep"></div>
+        <div class="per-row-lbl">Star passes</div>
+        <div class="per-val" style="color:var(--txt);" id="per-t1-sp">0</div>
+        <div class="per-val" style="color:var(--txt);" id="per-t2-sp">0</div>
+        <div class="per-sep"></div>
+        <div class="per-row-lbl">Avg jam pts</div>
+        <div class="per-val" style="color:var(--txt);" id="per-t1-avg">—</div>
+        <div class="per-val" style="color:var(--txt);" id="per-t2-avg">—</div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /app -->
+
+<!-- Disconnect overlay -->
+<div id="disc">
+  <p>Connection lost — reconnecting…</p>
+  <button onclick="showConfig()">Reconnect localhost</button>
+</div>
+
+<script>
+'use strict';
+
+/*
+  This file is intentionally dependency-free:
+*/
+
+// state
+let S = {};           // flat state: full CRG path → string value
+let ws = null;
+let reconnTimer = null;
+let jamHistory = [];
+let localBoxTimes = {};  // key: 't_pos' → remaining ms, used when CRG doesn't send PenaltyTime
+let prevBoxState  = {};  // key: 't_pos' → bool, for transition detection
+let powerJams     = {1: 0, 2: 0};   // power jams earned this period (opponent jammer in box)
+let prevJammerBox = {1: false, 2: false};  // previous jammer box state for transition detection
+let starPasses  = {1: 0, 2: 0};   // star passes executed this period
+let prevStarPass  = {1: false, 2: false};  // previous star pass state for transition detection
+let trackedPeriod = 1;             // reset powerJams/starPasses when period changes
+let lastGameSignature = localStorage.getItem('tm-announcer-game-signature') || '';
+let newGameCleared = false;
+const MAX_HIST = 40;
+const CG = 'ScoreBoard.CurrentGame.';
+const JAM_HISTORY_KEY = 'tm-announcer-jam-history';
+
+function saveJamHistory() {
+  try {
+    const recent = jamHistory.slice(0, MAX_HIST);
+    localStorage.setItem(JAM_HISTORY_KEY, JSON.stringify(recent));
+  } catch (_) {
+    // If storage is blocked, the view still works. We just lose the nice bit.
+  }
+}
+
+function loadJamHistory() {
+  try {
+    const raw = localStorage.getItem(JAM_HISTORY_KEY) || '[]';
+    const saved = JSON.parse(raw);
+    jamHistory = Array.isArray(saved) ? saved.slice(0, MAX_HIST) : [];
+  } catch (_) {
+    jamHistory = [];
+  }
+}
+
+function clearJamHistory() {
+  jamHistory = [];
+  try { localStorage.removeItem(JAM_HISTORY_KEY); } catch (_) {}
+}
+
+function gameSignature() {
+  // Prefer a real game id, if CRG gives us one.
+  // Team names are the fallback so reconnects do not trash history.
+  const explicit =
+    v('Id','') ||
+    v('UUID','') ||
+    v('GameId','') ||
+    v('GameUUID','') ||
+    v('CurrentGameId','');
+  if (explicit) return `id:${explicit}`;
+
+  const t1 = v('Team(1).TeamName') || v('Team(1).FullName') || v('Team(1).Name', '');
+  const t2 = v('Team(2).TeamName') || v('Team(2).FullName') || v('Team(2).Name', '');
+  return `teams:${t1}|${t2}`;
+}
+
+function maybeClearHistoryForNewGame() {
+  const sig = gameSignature();
+  if (!sig || sig === 'teams:|') return;
+
+  const p = vn('CurrentPeriodNumber', 1);
+  const upcoming = vn('UpcomingJamNumber', 0);
+  const s1 = vn('Team(1).Score', 0);
+  const s2 = vn('Team(2).Score', 0);
+
+  const looksFresh = p <= 1 && upcoming <= 1 && s1 === 0 && s2 === 0;
+  const signatureChanged = lastGameSignature && sig !== lastGameSignature;
+
+  if ((signatureChanged || looksFresh) && jamHistory.length && !newGameCleared) {
+    clearJamHistory();
+    newGameCleared = true;
+  }
+
+  if (sig !== lastGameSignature) {
+    lastGameSignature = sig;
+    try { localStorage.setItem('tm-announcer-game-signature', sig); } catch (_) {}
+  }
+
+  if (!looksFresh) newGameCleared = false;
+}
+
+// quick CRG state helpers
+function v(key, fb = '') {
+  // Most calls use short CRG paths. Full paths still work.
+  const val = S[CG + key] ?? S[key];
+  return String(val ?? fb);
+}
+function vb(key) {
+  const val = v(key).toLowerCase();
+  return val === 'true' || val === '1' || val === 'yes';
+}
+function vn(key, fb = 0) {
+  const n = parseFloat(v(key, ''));
+  return Number.isFinite(n) ? n : fb;
+}
+
+// Find the active (currently-being-served) BoxTrip for a given team + position.
+// BoxTrip.IsCurrent is the only truly live box indicator — Fielding.PenaltyBox
+// stays true as a historical record after a jam ends.
+function activeBoxTrip(t, pos) {
+  const skaterNum = v(`Team(${t}).Position(${pos}).RosterNumber`, '')
+                    || fldg(t, pos, 'SkaterNumber');
+  const pfx = `${CG}Team(${t}).BoxTrip(`;
+  const ids = new Set();
+  for (const k of Object.keys(S))
+    if (k.startsWith(pfx)) ids.add(k.slice(pfx.length).split(')')[0]);
+  for (const id of ids) {
+    const base = `Team(${t}).BoxTrip(${id})`;
+    if (!vb(`${base}.IsCurrent`)) continue;
+    if (skaterNum && v(`${base}.RosterNumber`) !== skaterNum) continue;
+    return { sym: v(`${base}.PenaltyCodes`, '').trim(), time: vn(`${base}.Time`, 0) };
+  }
+  return null;
+}
+// CRG sends this under Period(P).Jam(N).TeamJam(T).Fielding(pos).
+// Jam numbers reset each period, so we sort by (Period, Jam) to find the current one.
+function fldg(t, pos, prop, fb) {
+  const fbVal  = fb !== undefined ? fb : '';
+  const needle = `.TeamJam(${t}).Fielding(${pos}).${prop}`;
+  let bestP = -1, bestN = -1, bestVal = fbVal;
+  for (const k of Object.keys(S)) {
+    const idx = k.indexOf(needle);
+    if (idx < 0) continue;
+    const m = k.substring(0, idx).match(/Period\((\d+)\)[^(]*Jam\((\d+)\)[^(]*$/);
+    if (m) {
+      const p = parseInt(m[1]), n = parseInt(m[2]);
+      if (p > bestP || (p === bestP && n > bestN)) {
+        bestP = p; bestN = n; bestVal = S[k] || fbVal;
+      }
+    }
+  }
+  return bestVal;
+}
+function fldgb(t, pos, prop) {
+  const val = fldg(t, pos, prop, 'false').toLowerCase();
+  return val === 'true' || val === '1';
+}
+function fmtMs(ms) {
+  const s = Math.max(0, Math.round((parseInt(ms) || 0) / 1000));
+  return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+}
+function el(id) { return document.getElementById(id); }
+function txt(id, t) {
+  const node = el(id);
+  if (node) node.textContent = t;
+}
+function htm(id, markup) {
+  const node = el(id);
+  if (node) node.innerHTML = markup;
+}
+
+// clock panel
+function renderClock() {
+  const panel = el('jclk-panel');
+  if (!panel) return;
+
+  const timeoutRunning = vb('Clock(Timeout).Running');
+  const jamRunning = vb('Clock(Jam).Running');
+  const lineupRunning = vb('Clock(Lineup).Running');
+
+  const inJam = vb('InJam');
+  const inPeriod = vb('InPeriod');
+
+  const jamTime = v('Clock(Jam).Time', '120000');
+  const lineupTime = v('Clock(Lineup).Time', '30000');
+  const timeoutTime = v('Clock(Timeout).Time', '0');
+
+  panel.classList.remove('clock-jam', 'clock-lineup', 'clock-timeout');
+
+  // Priority order matters here. Timeout is explicit, then active jam,
+  // then lineup. If CRG sends booleans instead of strings, vb() handles it.
+  if (timeoutRunning) {
+    panel.classList.add('clock-timeout');
+    txt('jclk-lbl', 'Timeout');
+    txt('jam-clock', fmtMs(timeoutTime));
+  } else if (jamRunning || inJam) {
+    panel.classList.add('clock-jam');
+    txt('jclk-lbl', 'Jam clock');
+    txt('jam-clock', fmtMs(jamTime));
+  } else {
+    panel.classList.add('clock-lineup');
+    txt('jclk-lbl', 'Lineup');
+    txt('jam-clock', fmtMs(lineupTime));
+  }
+}
+
+// lead/star pass star
+function starCls(t) {
+  if (!vb('InJam'))              return 'star-nil';
+  if (vb(`Team(${t}).StarPass`)) return 'star-sp';
+  if (vb(`Team(${t}).Lead`))     return 'star-lead';
+  return 'star-nil';
+}
+
+// jammer trip readout
+function tripHtml(t) {
+  if (!vb('InJam')) return '';
+  const lead = vb(`Team(${t}).Lead`), sp = vb(`Team(${t}).StarPass`);
+  const color = sp ? 'var(--sp-c)' : lead ? 'var(--lead-c)' : 'var(--txt2)';
+  const score = vn(`Team(${t}).TripScore`, 0);
+  // Look up current trip number via RunningOrEndedTeamJam → TeamJam.CurrentTripNumber
+  const tjId = v(`Team(${t}).RunningOrEndedTeamJam`);
+  let tripNum = null;
+  if (tjId) {
+    for (const [k, val] of Object.entries(S)) {
+      if (k.includes(`.TeamJam(${tjId}).CurrentTripNumber`)) { tripNum = parseInt(val); break; }
+    }
+  }
+  const label = tripNum != null ? `Trip ${tripNum} · +${score}` : `+${score}`;
+  return `<span style="font-size:9px;white-space:nowrap;color:${color}">${label}</span>`;
+}
+
+// penalty box badge
+function boxHtml(t, pos) {
+  const bt   = activeBoxTrip(t, pos);
+  const time = (bt ? bt.time : 0) || (localBoxTimes[`${t}_${pos}`] || 0);
+  if (!bt && time <= 0) return '';
+
+  let s = 'BOX';
+  if (bt && bt.sym) s += ` · ${bt.sym}`;
+  if (time > 0)     s += ` <span style="opacity:.7">· ${fmtMs(time)}</span>`;
+  return `<span class="box-badge">${s}</span>`;
+}
+
+// little team status badges
+function teamBadgesHtml(t) {
+  let out = '';
+  if (vb(`Team(${t}).Calloff`)) out += `<span class="badge b-call">Calloff</span>`;
+  if (vb(`Team(${t}).Injury`))  out += `<span class="badge b-lost">Injury</span>`;
+  return out;
+}
+
+// timeout / OR pips
+function pipsHtml(n, max) {
+  let s = '';
+  for (let i = 0; i < max; i++) s += `<span class="pip ${i < n ? 'pip-on' : 'pip-off'}"></span>`;
+  return s;
+}
+
+// game state badge
+function stateInfo() {
+  const inJam    = vb('InJam');
+  const toRun    = vb('Clock(Timeout).Running');
+  const lineupRun = vb('Clock(Lineup).Running');
+  const isOR     = vb('OfficialReview');
+  const owner    = v('TimeoutOwner', '');
+  const inPer    = vb('InPeriod');
+  const inOT     = vb('InOvertime');
+  const noMore   = vb('NoMoreJam');
+  const official = vb('OfficialScore');
+  const state    = v('State', '');
+  const period   = vn('CurrentPeriodNumber', 0);
+
+  // Pregame: game not yet started
+  if (state === 'Prepared' || period === 0)
+    return { cls: 'b-dim', label: 'Pregame' };
+
+  if (inJam)
+    return { cls: 'b-lead', label: inOT ? 'OT Jam' : 'In jam' };
+
+  if (toRun) {
+    const t1 = owner.endsWith('_1') || owner === '1';
+    const t2 = owner.endsWith('_2') || owner === '2';
+    if (isOR) return { cls: 'b-call', label: t1 ? 'T1 Off. Review' : t2 ? 'T2 Off. Review' : 'Off. Review' };
+    if (t1)   return { cls: 'b-call', label: 'T1 Timeout' };
+    if (t2)   return { cls: 'b-call', label: 'T2 Timeout' };
+    return { cls: 'b-dim', label: 'Official T/O' };
+  }
+
+  if (inPer || lineupRun) {
+    if (noMore) return { cls: 'b-warn', label: 'No more jam' };
+    if (inOT)   return { cls: 'b-warn', label: 'Overtime' };
+    return { cls: 'b-lineup', label: 'Lineup' };
+  }
+
+  // Not in a period — game finished or between periods
+  if (state === 'Finished' || period >= 2) {
+    if (official) return { cls: 'b-lead', label: 'Official score' };
+    return { cls: 'b-dim', label: 'Unofficial score' };
+  }
+
+  // Period 1 ended, period 2 not yet started
+  return { cls: 'b-dim', label: 'Halftime' };
+}
+
+// penalty heat: skaters at 4+
+function penHeatHtml() {
+  const hot = [];
+  for (const t of [1, 2]) {
+    const pfx = `${CG}Team(${t}).Skater(`;
+    const ids = new Set();
+    for (const k of Object.keys(S)) {
+      if (k.startsWith(pfx)) ids.add(k.slice(pfx.length).split(')')[0]);
+    }
+    for (const id of ids) {
+      const base = `Team(${t}).Skater(${id})`;
+      const cnt = vn(`${base}.PenaltyCount`, 0);
+      if (cnt >= 4) hot.push({ t, num: v(`${base}.RosterNumber`,'?'), name: v(`${base}.Name`,'?'), cnt });
+    }
+  }
+  hot.sort((a, b) => b.cnt - a.cnt);
+  if (!hot.length) return '<div style="font-size:8.5px;color:var(--txt3);padding:2px 0;">None currently</div>';
+  return hot.slice(0, 4).map(h =>
+    `<div class="pen-row">
+      <span class="pen-num ${h.cnt >= 7 ? 'pen-danger' : h.cnt >= 6 ? 'pen-danger' : 'pen-warn'}">${h.cnt >= 7 ? 'X' : h.cnt}</span>
+      <span class="pen-team">T${h.t}</span>
+      <span class="pen-name">#${h.num} ${h.name}</span>
+    </div>`
+  ).join('');
+}
+
+// jam history
+function captureJam(jammerSnap = {}) {
+  const p     = vn('CurrentPeriodNumber', 1);
+  const jamN  = Math.max(1, vn('UpcomingJamNumber', 1) - 1);
+  const t1s   = vn('Team(1).JamScore', 0);
+  const t2s   = vn('Team(2).JamScore', 0);
+  const t1L   = vb('Team(1).Lead'), t2L = vb('Team(2).Lead');
+  const t1Lo  = vb('Team(1).Lost'), t2Lo = vb('Team(2).Lost');
+  const lost  = t1Lo || t2Lo;
+  const call  = vb('Team(1).Calloff') || vb('Team(2).Calloff');
+  const lTeam = t1L ? 1 : t2L ? 2 : 0;
+  // Use pre-merge snapshot first, fall back to current state
+  let jName = lTeam ? (jammerSnap[lTeam] || v(`Team(${lTeam}).Position(Jammer).Name`, '')) : '';
+  if (!jName) jName = '—';
+  const oCls  = lost ? 'b-lost' : call ? 'b-call' : 'b-dim';
+  const oLbl  = lost ? 'Lost lead' : call ? 'Calloff' : 'Time';
+  jamHistory.unshift({ p, jamN, t1s, t2s, lTeam, jName, oCls, oLbl, lost });
+  if (jamHistory.length > MAX_HIST) jamHistory.pop();
+  saveJamHistory();
+  // Scroll history panel to top so newest entry is visible
+  const hr = el('jam-history');
+  if (hr) hr.scrollTop = 0;
+}
+
+function histHtml() {
+  return jamHistory.map((j, i) => {
+    const cls = i % 2 === 0 ? 'hi' : 'lo';
+    const scores = `+${j.t1s} <span style="color:var(--txt3)">vs</span> +${j.t2s}`;
+    const lbl  = j.lost ? 'Lost lead' : j.lTeam ? `T${j.lTeam} Lead` : 'No lead';
+    const lCls = j.lost ? 'b-lost' : j.lTeam ? 'b-lead' : 'b-dim';
+    return `<div class="jam-row ${cls}">
+      <span class="jam-num">J${j.jamN}</span>
+      <span class="jam-micro-div"></span>
+      <span class="jam-scores">${scores}</span>
+      <span class="badge ${lCls}">${lbl}</span>
+      <span class="jam-scorer">${j.jName}</span>
+      <span class="jam-outcome"><span class="badge ${j.oCls}">${j.oLbl}</span></span>
+    </div>`;
+  }).join('');
+}
+
+// period summary
+function renderPeriod() {
+  const p = vn('CurrentPeriodNumber', 1);
+  txt('per-lbl', `Period ${p} summary`);
+
+  txt('per-t1-pj', powerJams[1]);
+  txt('per-t2-pj', powerJams[2]);
+  txt('per-t1-sp', starPasses[1]);
+  txt('per-t2-sp', starPasses[2]);
+
+  const t1pen = vn(`Period(${p}).Team1PenaltyCount`, null);
+  const t2pen = vn(`Period(${p}).Team2PenaltyCount`, null);
+  const t1pEl = el('per-t1-pen'), t2pEl = el('per-t2-pen');
+  if (t1pen !== null) txt('per-t1-pen', t1pen);
+  if (t2pen !== null) txt('per-t2-pen', t2pen);
+  if (t1pEl && t2pEl && t1pen !== null && t2pen !== null) {
+    t1pEl.style.color = 'var(--txt)';
+    t2pEl.style.color = 'var(--txt)';
+  }
+
+  const pj   = jamHistory.filter(j => j.p === p);
+  txt('per-t1-lead', pj.filter(j => j.lTeam === 1).length);
+  txt('per-t2-lead', pj.filter(j => j.lTeam === 2).length);
+  const t1a  = pj.length ? Math.round(pj.reduce((a,j)=>a+j.t1s,0)/pj.length) : null;
+  const t2a  = pj.length ? Math.round(pj.reduce((a,j)=>a+j.t2s,0)/pj.length) : null;
+  txt('per-t1-avg', t1a !== null ? t1a : '—');
+  txt('per-t2-avg', t2a !== null ? t2a : '—');
+
+  const t1hdr = el('per-t1-hdr');
+  if (t1hdr) t1hdr.style.color = vb('Team(1).Lead') ? 'var(--lead-c)' : 'var(--txt2)';
+}
+
+// render everything
+function render() {
+  txt('period-clock', fmtMs(v('Clock(Period).Time', '1800000')));
+  txt('period-num', v('CurrentPeriodNumber', '—'));
+
+  const inJam   = vb('InJam');
+  const upcoming = vn('UpcomingJamNumber', 0);
+  txt('jam-num', inJam ? upcoming : (upcoming > 1 ? upcoming - 1 : '—'));
+
+  renderClock();
+
+  for (const t of [1, 2]) {
+    txt(`t${t}-name`, v(`Team(${t}).TeamName`) || v(`Team(${t}).FullName`) || v(`Team(${t}).Name`, `Team ${t}`));
+    txt(`t${t}-score`, v(`Team(${t}).Score`, '0'));
+    const star = el(`t${t}-star`);
+    if (star) star.className = `star ${starCls(t)}`;
+    htm(`t${t}-badges`, teamBadgesHtml(t));
+
+    const positions = [['j','Jammer'],['p','Pivot'],['b1','Blocker1'],['b2','Blocker2'],['b3','Blocker3']];
+    const sp = vb(`Team(${t}).StarPass`);
+
+    // During star pass: pivot slot holds the former jammer (now a blocker)
+    const pivotLbl = el(`t${t}-p-lbl`);
+    if (pivotLbl) pivotLbl.textContent = sp ? 'Blocker' : 'Pivot';
+
+    for (const [pfx, pos] of positions) {
+      // When star pass is active, swap jammer ↔ pivot skater data
+      let srcPos = pos;
+      if (sp && pfx === 'j') srcPos = 'Pivot';
+      else if (sp && pfx === 'p') srcPos = 'Jammer';
+
+      const num  = v(`Team(${t}).Position(${srcPos}).RosterNumber`, '');
+      const name = v(`Team(${t}).Position(${srcPos}).Name`, '');
+      txt(`t${t}-${pfx}-num`, num ? `#${num}` : '—');
+      txt(`t${t}-${pfx}-name`, name || '—');
+      if (pfx === 'j') {
+        const jammerBox = boxHtml(t, pos);
+        htm(`t${t}-j-trip`, jammerBox || tripHtml(t));
+      } else {
+        htm(`t${t}-${pfx}-box`, boxHtml(t, pos));
+      }
+    }
+
+    htm(`t${t}-timeouts`, pipsHtml(vn(`Team(${t}).Timeouts`, 0), 3));
+    htm(`t${t}-or`,       pipsHtml(vn(`Team(${t}).OfficialReviews`, 0), 1));
+    txt(`t${t}-jam-score`, v(`Team(${t}).JamScore`, '0'));
+  }
+
+  const s1 = vn('Team(1).Score', 0), s2 = vn('Team(2).Score', 0), diff = s1 - s2;
+  txt('differential', diff === 0 ? '—' : Math.abs(diff));
+  const dl = el('diff-leader');
+  if (dl) {
+    dl.textContent = diff > 0 ? 'T1 leading' : diff < 0 ? 'T2 leading' : '—';
+    dl.style.color = diff !== 0 ? (diff > 0 ? 'var(--lead-c)' : 'var(--txt2)') : 'var(--txt2)';
+  }
+
+  const si = stateInfo();
+  const sb = el('state-badge');
+  if (sb) { sb.textContent = si.label; sb.className = `badge ${si.cls}`; }
+
+  htm('pen-heat', penHeatHtml());
+  htm('jam-history', histHtml());
+  renderPeriod();
+}
+
+// CRG state comes through here
+function applyState(updates) {
+  const wasInJam = vb('InJam');
+  // Snapshot jammer names before the update potentially clears them
+  const jammerSnap = {
+    1: v('Team(1).Position(Jammer).Name'),
+    2: v('Team(2).Position(Jammer).Name'),
+  };
+  Object.assign(S, updates);
+  maybeClearHistoryForNewGame();
+  if (wasInJam && !vb('InJam')) captureJam(jammerSnap);
+
+  // Reset power jam counts when period changes
+  const curPeriod = vn('CurrentPeriodNumber', 1);
+  if (curPeriod !== trackedPeriod) {
+    powerJams = {1: 0, 2: 0};
+    prevJammerBox = {1: false, 2: false};
+    starPasses = {1: 0, 2: 0};
+    prevStarPass = {1: false, 2: false};
+    trackedPeriod = curPeriod;
+    jamHistory = [];
+    saveJamHistory();
+  }
+
+  // Detect jammer box transitions (false → true): awards a power jam to the OTHER team
+  for (const t of [1, 2]) {
+    const boxNow = activeBoxTrip(t, 'Jammer') !== null;
+    if (boxNow && !prevJammerBox[t]) powerJams[t === 1 ? 2 : 1]++;
+    prevJammerBox[t] = boxNow;
+  }
+
+  // Detect star pass transitions (false → true): count per team
+  for (const t of [1, 2]) {
+    const spNow = vb(`Team(${t}).StarPass`);
+    if (spNow && !prevStarPass[t]) starPasses[t]++;
+    prevStarPass[t] = spNow;
+  }
+
+  // Local 30s box timers — fallback when CRG doesn't supply BoxTrip.Time
+  for (const t of [1, 2]) {
+    for (const pos of ['Jammer','Pivot','Blocker1','Blocker2','Blocker3']) {
+      const key   = `${t}_${pos}`;
+      const inBox = activeBoxTrip(t, pos) !== null;
+      if (inBox && !prevBoxState[key]) localBoxTimes[key] = 30000;
+      if (!inBox) delete localBoxTimes[key];
+      prevBoxState[key] = inBox;
+    }
+  }
+
+  render();
+}
+
+// CRG websocket
+function connect(host, port) {
+  setStatus('conn', 'Connecting…');
+  try { ws = new WebSocket(`ws://${host}:${port}/WS`); }
+  catch(e) {
+    if (isRemote) txt('cfg-err', 'Invalid address.');
+    setStatus('err', 'Invalid address');
+    return;
+  }
+
+  ws.onopen = () => {
+    setStatus('ok', 'Connected');
+    showApp();
+    el('disc').classList.remove('show');
+    ws.send(JSON.stringify({ action: 'Register', paths: [
+      'ScoreBoard.CurrentGame',
+      'ScoreBoard.CurrentGame.Clock(*)',
+      'ScoreBoard.CurrentGame.Team(*)',
+      'ScoreBoard.CurrentGame.Team(*).Position(*)',
+      'ScoreBoard.CurrentGame.Team(*).Skater(*)',
+      'ScoreBoard.CurrentGame.Team(*).Skater(*).Penalty(*)',
+      'ScoreBoard.CurrentGame.Team(*).BoxTrip(*)',
+      'ScoreBoard.CurrentGame.Period(*)',
+      'ScoreBoard.CurrentGame.Period(*).Jam(*)',
+      'ScoreBoard.CurrentGame.Period(*).Jam(*).TeamJam(*)',
+      'ScoreBoard.CurrentGame.Period(*).Jam(*).TeamJam(*).ScoringTrip(*)',
+      'ScoreBoard.Version(*)'
+    ]}));
+  };
+
+  ws.onmessage = e => {
+    try {
+      const msg = JSON.parse(e.data);
+      if (msg.state) applyState(msg.state);
+      const ver = msg.state?.['ScoreBoard.Version(release)'];
+      if (ver) txt('cfg-ver', `CRG ${ver}`);
+    } catch(_) {}
+  };
+
+  ws.onclose = ws.onerror = () => {
+    setStatus('err', 'Disconnected');
+    if (isRemote) {
+      // Remote: show the connection screen so the user can reconnect
+      el('app').hidden = true;
+      el('cfg').hidden = false;
+      txt('cfg-err', `Lost connection to ${host}:${port}. Check the host and try again.`);
+    } else {
+      // Localhost: keep retrying quietly in the background
+      if (reconnTimer) clearTimeout(reconnTimer);
+      reconnTimer = setTimeout(() => connect(host, port), 2000);
+    }
+  };
+}
+
+// ── Demo mode (?demo=1) ──────────────────────────────────────────────────────
+// Simulates a live game without a CRG connection.
+// Cycles through jam → lineup → jam, scoring points, and toggling lead/star-pass.
+// All state is injected through the normal applyState() path so rendering is identical
+// to a real game.  Open announcers.html?demo=1 to activate.
+
+function startDemo() {
+  // Kill any real WS connection attempts
+  if (reconnTimer) { clearTimeout(reconnTimer); reconnTimer = null; }
+  if (ws) { try { ws.onclose = ws.onerror = null; ws.close(); } catch(_){} ws = null; }
+  setStatus('demo', 'Demo mode');
+
+  const B = 'ScoreBoard.CurrentGame.';   // CRG path prefix
+
+  // ── roster data ──
+  const TEAM1 = {
+    name: 'Unicorns',
+    skaters: [
+      { id:'u1', num:'1',   name:"Frankly Jammin'"         },   // jammer
+      { id:'u2', num:'22',  name:'Uni-Cornered'            },   // pivot
+      { id:'u3', num:'404', name:'A Dell Rolling in the Deep' }, // blocker — starts on pen heat
+      { id:'u4', num:'88',  name:'Glitter Guillotine'      },
+      { id:'u5', num:'13',  name:'Sparkle Violent'         },
+      { id:'u6', num:'69',  name:'Horn to Be Wild'         },
+      { id:'u7', num:'7',   name:'Magical Bruiser'         },
+    ],
+    penCount: [0, 0, 4, 0, 1, 0, 2],   // A Dell @ 4 → penalty heat
+  };
+  const TEAM2 = {
+    name: 'Ready Yetis',
+    skaters: [
+      { id:'y1', num:'00',  name:'Oops, All Jammers!'      },   // jammer
+      { id:'y2', num:'23',  name:'Juke from Skate Farm'    },   // pivot
+      { id:'y3', num:'19',  name:'Abominable No-Man'       },   // blocker — starts on pen heat
+      { id:'y4', num:'34',  name:'Frostbite McFight'       },
+      { id:'y5', num:'9',   name:'Snow Mercy'              },
+      { id:'y6', num:'3',   name:'Chill or Be Chilled'     },
+      { id:'y7', num:'77',  name:'Big Foot Traffic'        },
+    ],
+    penCount: [0, 0, 5, 0, 0, 1, 0],   // Abominable No-Man @ 5 → penalty heat
+  };
+
+  // ── mutable game state — start mid-game so history panel is populated ──
+  const game = {
+    period: 1,
+    jamNum: 8,       // we're in jam 8; jams 1–7 are already in history
+    score1: 47,
+    score2: 39,
+    timeouts1: 3,
+    timeouts2: 3,
+    or1: 1,
+    or2: 1,
+    periodMs: 30 * 60 * 1000,   // 30:00
+    phase: 'lineup',             // 'jam' | 'lineup' | 'timeout'
+    phaseMs: 5000,               // start with a short lineup so action begins quickly
+    jamMs: 0,
+    lineupMs: 0,
+    lead1: false,
+    lead2: false,
+    sp1: false,
+    sp2: false,
+    jamScore1: 0,
+    jamScore2: 0,
+    tripNum1: 0,
+    tripNum2: 0,
+    calloff1: false,
+    calloff2: false,
+    boxes: {},   // key: '1_Jammer' etc → { symbol, timeMs }
+  };
+
+  const POS_NAMES   = ['Jammer','Pivot','Blocker1','Blocker2','Blocker3'];
+  const PEN_SYMBOLS = ['B','C','F','H','X','I','A'];   // back block, cut, forearm, high block, …
+
+  // ── lineup rotation: who is on the track each jam ──
+  // positions cycle through the roster so names change every jam
+  let jamRotate1 = 0;
+  let jamRotate2 = 0;
+
+  function rosterSlice(team, offset) {
+    const n = team.skaters.length;
+    return [0,1,2,3,4].map(i => team.skaters[(i + offset) % n]);
+  }
+
+  // ── build a full state snapshot ──
+  function buildState() {
+    const s = {};
+    const inJam    = game.phase === 'jam';
+    const inLineup = game.phase === 'lineup';
+    const inTO     = game.phase === 'timeout';
+
+    s[`${B}CurrentPeriodNumber`]        = String(game.period);
+    s[`${B}UpcomingJamNumber`]          = String(inJam ? game.jamNum : game.jamNum);
+    s[`${B}InPeriod`]                   = 'true';
+    s[`${B}InJam`]                      = inJam ? 'true' : 'false';
+
+    s[`${B}Clock(Period).Time`]         = String(Math.max(0, game.periodMs));
+    s[`${B}Clock(Jam).Running`]         = inJam    ? 'true' : 'false';
+    s[`${B}Clock(Jam).Time`]            = String(Math.max(0, game.jamMs));
+    s[`${B}Clock(Lineup).Running`]      = inLineup ? 'true' : 'false';
+    s[`${B}Clock(Lineup).Time`]         = String(Math.max(0, game.lineupMs));
+    s[`${B}Clock(Timeout).Running`]     = inTO     ? 'true' : 'false';
+    s[`${B}Clock(Timeout).Time`]        = inTO     ? String(Math.max(0, game.phaseMs)) : '0';
+
+    s[`${B}Team(1).TeamName`]           = TEAM1.name;
+    s[`${B}Team(2).TeamName`]           = TEAM2.name;
+    s[`${B}Team(1).Score`]              = String(game.score1);
+    s[`${B}Team(2).Score`]              = String(game.score2);
+    s[`${B}Team(1).JamScore`]           = String(game.jamScore1);
+    s[`${B}Team(2).JamScore`]           = String(game.jamScore2);
+    s[`${B}Team(1).TripScore`]          = String(game.jamScore1);
+    s[`${B}Team(2).TripScore`]          = String(game.jamScore2);
+    // Trip number — use a stable fake TeamJam ID per jam so tripHtml() can find it
+    const tjId1 = `demo-t1-j${game.jamNum}`, tjId2 = `demo-t2-j${game.jamNum}`;
+    s[`${B}Team(1).RunningOrEndedTeamJam`] = tjId1;
+    s[`${B}Team(2).RunningOrEndedTeamJam`] = tjId2;
+    s[`${B}TeamJam(${tjId1}).CurrentTripNumber`] = String(game.tripNum1);
+    s[`${B}TeamJam(${tjId2}).CurrentTripNumber`] = String(game.tripNum2);
+    s[`${B}Team(1).Lead`]               = game.lead1 ? 'true' : 'false';
+    s[`${B}Team(2).Lead`]               = game.lead2 ? 'true' : 'false';
+    s[`${B}Team(1).StarPass`]           = game.sp1   ? 'true' : 'false';
+    s[`${B}Team(2).StarPass`]           = game.sp2   ? 'true' : 'false';
+    s[`${B}Team(1).Calloff`]            = game.calloff1 ? 'true' : 'false';
+    s[`${B}Team(2).Calloff`]            = game.calloff2 ? 'true' : 'false';
+    s[`${B}Team(1).Timeouts`]           = String(game.timeouts1);
+    s[`${B}Team(2).Timeouts`]           = String(game.timeouts2);
+    s[`${B}Team(1).OfficialReviews`]    = String(game.or1);
+    s[`${B}Team(2).OfficialReviews`]    = String(game.or2);
+
+    // positions + box state
+    const pos1 = rosterSlice(TEAM1, jamRotate1);
+    const pos2 = rosterSlice(TEAM2, jamRotate2);
+    const POS = POS_NAMES;
+    for (let i = 0; i < 5; i++) {
+      s[`${B}Team(1).Position(${POS[i]}).RosterNumber`] = pos1[i].num;
+      s[`${B}Team(1).Position(${POS[i]}).Name`]         = pos1[i].name;
+      s[`${B}Team(2).Position(${POS[i]}).RosterNumber`] = pos2[i].num;
+      s[`${B}Team(2).Position(${POS[i]}).Name`]         = pos2[i].name;
+
+      for (const t of [1, 2]) {
+        const box = game.boxes[`${t}_${POS[i]}`];
+        s[`${B}Team(${t}).Position(${POS[i]}).PenaltyBox`]           = box ? 'true' : 'false';
+        s[`${B}Team(${t}).Position(${POS[i]}).CurrentBoxSymbols`]    = box ? box.symbol : '';
+        s[`${B}Team(${t}).Position(${POS[i]}).PenaltyTime`]          = box ? String(box.timeMs) : '0';
+      }
+    }
+
+    // skater penalty counts (all skaters, so penalty heat populates)
+    for (const sk of TEAM1.skaters) {
+      s[`${B}Team(1).Skater(${sk.id}).RosterNumber`] = sk.num;
+      s[`${B}Team(1).Skater(${sk.id}).Name`]         = sk.name;
+      s[`${B}Team(1).Skater(${sk.id}).PenaltyCount`] = String(TEAM1.penCount[TEAM1.skaters.indexOf(sk)]);
+    }
+    for (const sk of TEAM2.skaters) {
+      s[`${B}Team(2).Skater(${sk.id}).RosterNumber`] = sk.num;
+      s[`${B}Team(2).Skater(${sk.id}).Name`]         = sk.name;
+      s[`${B}Team(2).Skater(${sk.id}).PenaltyCount`] = String(TEAM2.penCount[TEAM2.skaters.indexOf(sk)]);
+    }
+
+    // period penalty totals
+    const p = game.period;
+    s[`${B}Period(${p}).Team1PenaltyCount`] = String(TEAM1.penCount.reduce((a, n) => a + n, 0));
+    s[`${B}Period(${p}).Team2PenaltyCount`] = String(TEAM2.penCount.reduce((a, n) => a + n, 0));
+
+    return s;
+  }
+
+  // ── random helpers ──
+  const rnd  = (a,b)  => Math.floor(Math.random() * (b - a + 1)) + a;
+  const coin = ()     => Math.random() < 0.5;
+
+  // ── called at the start of each new jam ──
+  function setupJam() {
+    game.jamMs     = 2 * 60 * 1000;   // 2:00 jam clock
+    game.jamScore1 = 0;
+    game.jamScore2 = 0;
+    game.tripNum1  = 0;
+    game.tripNum2  = 0;
+    game.calloff1  = false;
+    game.calloff2  = false;
+
+    // Lead: one team gets it ~65% of the time; rare tie (no lead)
+    const r = Math.random();
+    game.lead1 = r < 0.40;
+    game.lead2 = !game.lead1 && r < 0.80;
+
+    // Star pass: ~15% chance for either jammer
+    game.sp1 = game.lead1 && Math.random() < 0.15;
+    game.sp2 = game.lead2 && Math.random() < 0.15;
+
+    // Rotate lineup every jam
+    jamRotate1 = (jamRotate1 + rnd(0,2)) % TEAM1.skaters.length;
+    jamRotate2 = (jamRotate2 + rnd(0,2)) % TEAM2.skaters.length;
+  }
+
+  // ── called while a jam is running (~every 8 s) to add scoring trips ──
+  function scoreTrip() {
+    if (game.phase !== 'jam') return;
+    if (game.lead1 || (!game.lead1 && !game.lead2)) {
+      const pts = rnd(0, 4);
+      game.jamScore1 += pts;
+      game.score1    += pts;
+      game.tripNum1++;
+    }
+    if (game.lead2 || (!game.lead1 && !game.lead2)) {
+      const pts = rnd(0, 4);
+      game.jamScore2 += pts;
+      game.score2    += pts;
+      game.tripNum2++;
+    }
+    // Penalty action — each trip has a good chance of something happening
+    const penRolls = Math.random() < 0.25 ? 2 : 1;
+    for (let pr = 0; pr < penRolls; pr++) {
+      if (Math.random() < 0.38) {
+        const t      = coin() ? 1 : 2;
+        const posIdx = rnd(0, POS_NAMES.length - 1);
+        const pos    = POS_NAMES[posIdx];
+        const key    = `${t}_${pos}`;
+        const sym    = PEN_SYMBOLS[rnd(0, PEN_SYMBOLS.length - 1)];
+        // Send skater to box (30 s); don't double-box the same position
+        if (!game.boxes[key]) {
+          game.boxes[key] = { symbol: sym, timeMs: 30000 };
+        }
+        // Also bump their career penalty count
+        const team  = t === 1 ? TEAM1 : TEAM2;
+        const rot   = t === 1 ? jamRotate1 : jamRotate2;
+        const slice = rosterSlice(team, rot);
+        const skIdx = team.skaters.indexOf(slice[posIdx]);
+        if (skIdx >= 0) team.penCount[skIdx] = Math.min(7, team.penCount[skIdx] + 1);
+        // Jammer penalty → lose lead
+        if (pos === 'Jammer') {
+          if (t === 1) game.lead1 = false;
+          else         game.lead2 = false;
+        }
+      }
+    }
+  }
+
+  // ── called when a jam ends ──
+  function endJam() {
+    // Lead jammer calls it off sometimes
+    if (game.lead1 && game.jamMs > 30000) game.calloff1 = true;
+    if (game.lead2 && game.jamMs > 30000) game.calloff2 = true;
+    game.jamMs = 0;
+    game.phase = 'lineup';
+    game.lineupMs = 30000;
+  }
+
+  // ── main tick (1 000 ms) ──
+  let tripTimer = 0;
+
+  function tick() {
+    const TICK = 1000;
+    game.periodMs = Math.max(0, game.periodMs - TICK);
+
+    if (game.phase === 'jam') {
+      game.jamMs    = Math.max(0, game.jamMs - TICK);
+      tripTimer    += TICK;
+
+      // Score a trip ~every 8 s
+      if (tripTimer >= 8000) {
+        scoreTrip();
+        tripTimer = 0;
+      }
+
+      // Jam ends when clock hits 0, or lead jammer calls it off after 30 s
+      const elapsed = 120000 - game.jamMs;
+      const calloffWindow = (game.lead1 || game.lead2) && elapsed > 30000;
+      if (game.jamMs <= 0 || (calloffWindow && Math.random() < 0.04)) {
+        endJam();
+      }
+
+    } else if (game.phase === 'lineup') {
+      game.lineupMs = Math.max(0, game.lineupMs - TICK);
+      if (game.lineupMs <= 0) {
+        // Start next jam
+        game.jamNum++;
+        tripTimer = 0;
+        setupJam();
+        game.phase = 'jam';
+      }
+
+    } else if (game.phase === 'timeout') {
+      game.phaseMs = Math.max(0, game.phaseMs - TICK);
+      if (game.phaseMs <= 0) {
+        game.phase    = 'lineup';
+        game.lineupMs = 30000;
+      }
+    }
+
+    // Period ends at 0
+    if (game.periodMs <= 0 && game.period < 2) {
+      game.period++;
+      game.periodMs = 30 * 60 * 1000;
+      game.jamNum   = 1;
+      game.phase    = 'lineup';
+      game.lineupMs = 30000;
+    }
+
+    // Tick down active box penalties only while a jam is running
+    if (game.phase === 'jam') {
+      for (const key of Object.keys(game.boxes)) {
+        game.boxes[key].timeMs -= TICK;
+        if (game.boxes[key].timeMs <= 0) delete game.boxes[key];
+      }
+    }
+
+    applyState(buildState());
+  }
+
+  // Kick off immediately with lineup → short wait → first jam
+  setupJam();
+  game.phase    = 'lineup';
+  game.lineupMs = 5000;   // 5 s countdown so the view isn't blank long
+  applyState(buildState());
+
+  // ── Pre-seed jam history (jams 4–7) so the history panel isn't empty ──
+  // Format: { p, jamN, t1s, t2s, lTeam, jName, oCls, oLbl, lost }
+  jamHistory = [
+    { p:1, jamN:7, t1s:4, t2s:0, lTeam:1, jName:"Frankly Jammin'",   oCls:'b-call', oLbl:'Calloff',   lost:false },
+    { p:1, jamN:6, t1s:3, t2s:5, lTeam:2, jName:'Oops, All Jammers!', oCls:'b-dim',  oLbl:'Time',      lost:false },
+    { p:1, jamN:5, t1s:0, t2s:2, lTeam:0, jName:'—',                  oCls:'b-dim',  oLbl:'Time',      lost:false },
+    { p:1, jamN:4, t1s:6, t2s:3, lTeam:1, jName:"Frankly Jammin'",   oCls:'b-call', oLbl:'Calloff',   lost:false },
+  ];
+  saveJamHistory();
+  render();   // repaint now that history is populated
+
+  setInterval(tick, 1000);
+}
+
+// status text/dot helper
+function setStatus(state, label) {
+  const d = el('sdot'), t = el('stxt');
+  if (d) d.className = `sdot sdot-${state}`;
+  if (t) t.textContent = label || '';
+}
+
+// theme
+function applyTheme(dark) {
+  document.body.className = (dark ? 'dark' : 'light') + (isRemote ? ' remote' : '');
+  localStorage.setItem('tm-dark', dark ? '1' : '0');
+}
+
+// screen helpers
+function showConfig() {
+  if (reconnTimer) { clearTimeout(reconnTimer); reconnTimer = null; }
+  if (ws) { ws.onclose = ws.onerror = null; ws.close(); ws = null; }
+  if (isRemote) {
+    el('app').hidden = true;
+    el('cfg').hidden = false;
+    el('disc').classList.remove('show');
+    txt('cfg-err', '');
+  } else {
+    // localhost: just silently reconnect
+    setStatus('conn', 'Reconnecting to localhost:8000…');
+    connect('localhost', '8000');
+  }
+}
+
+function cfgConnect() {
+  const host = (el('cfg-host').value || '').trim();
+  const port = (el('cfg-port').value || '8000').trim();
+  if (!host) { txt('cfg-err', 'Please enter a host address.'); return; }
+  txt('cfg-err', '');
+  setStatus('conn', `Connecting to ${host}:${port}…`);
+  // Save for reconnects
+  try { localStorage.setItem('tm-remote-host', host);
+        localStorage.setItem('tm-remote-port', port); } catch(_) {}
+  connect(host, port);
+}
+
+function showApp() {
+  el('app').hidden = false;
+  if (isRemote) el('cfg').hidden = true;
+}
+
+// boot
+let isRemote = false;
+(function init() {
+  loadJamHistory();
+
+  const params = new URLSearchParams(window.location.search);
+  isRemote = params.get('mode') === 'remote';
+
+  const themeParam = params.get('theme');
+  if (themeParam === 'light') applyTheme(false);
+  else if (themeParam === 'dark') applyTheme(true);
+  else applyTheme(localStorage.getItem('tm-dark') !== '0');
+
+  S = {};
+  render();
+
+  if (params.get('demo') === '1') {
+    showApp();
+    startDemo();
+  } else if (isRemote) {
+    // Show connection screen; restore last host if available
+    try {
+      const h = localStorage.getItem('tm-remote-host');
+      const p = localStorage.getItem('tm-remote-port');
+      if (h) el('cfg-host').value = h;
+      if (p) el('cfg-port').value = p;
+    } catch(_) {}
+    el('cfg').hidden = false;
+  } else {
+    showApp();
+    connect('localhost', '8000');
+    setStatus('conn', 'Connecting to localhost:8000…');
+  }
+})();
+
+// Local box timer — ticks only while a jam is running
+setInterval(() => {
+  if (!vb('InJam') || !Object.keys(localBoxTimes).length) return;
+  for (const key of Object.keys(localBoxTimes)) {
+    localBoxTimes[key] = Math.max(0, localBoxTimes[key] - 1000);
+    if (localBoxTimes[key] <= 0) delete localBoxTimes[key];
+  }
+  render();
+}, 1000);
+</script>
+</body>
+</html>
