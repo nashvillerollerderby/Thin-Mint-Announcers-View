@@ -70,6 +70,7 @@ body.light{
 .b-danger{background:var(--danger-bg);color:var(--danger-c);border:1px solid var(--danger-b);}
 .b-timeout{background:var(--timeout-bg);color:var(--timeout-c);border:1px solid var(--timeout-b);}
 .b-lineup{background:var(--lineup-bg);color:var(--lineup-c);border:1px solid var(--lineup-b);}
+.b-sp{background:rgba(0,212,232,.16);color:var(--sp-c);border:1px solid var(--sp-c);}
 .box-badge{display:inline-flex;align-items:center;gap:2px;font-size:7px;padding:2px 5px;border-radius:3px;font-weight:500;background:var(--lost-bg);color:var(--lost-c);border:1px solid var(--lost-b);white-space:nowrap;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;}
 .pip{width:6px;height:6px;border-radius:50%;display:inline-block;margin:1px;flex-shrink:0;}
 .pip-on{background:var(--active);}
@@ -432,6 +433,8 @@ body.light #app{
   border-radius:12px 0 0 12px;
   padding:6px 10px;
 }
+.hist-header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:3px;}
+.hist-header-hint{font-size:7px;text-transform:uppercase;letter-spacing:.11em;color:var(--txt3);font-weight:850;white-space:nowrap;}
 .period-panel{
   border-radius:0 12px 12px 0;
   padding:6px 12px;
@@ -613,6 +616,131 @@ body.remote .remote-only { display: flex !important; }
 /* localhost: never cover the view; remote: show on drop */
 body:not(.remote) #disc { display: none !important; }
 
+
+/* ── Hotkey popups ── */
+.hotkey-modal{display:none;position:fixed;inset:0;z-index:5000;align-items:center;justify-content:center;padding:28px;background:rgba(0,0,0,.62);backdrop-filter:blur(7px)}
+.hotkey-modal.show{display:flex}.hotkey-card{width:min(920px,94vw);max-height:min(86vh,760px);overflow:hidden;display:flex;flex-direction:column;gap:12px;border:1px solid var(--border);border-radius:18px;background:var(--bg2);color:var(--txt);box-shadow:0 22px 70px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.06)}
+.hotkey-card-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:18px 20px 0}.hotkey-title{font-size:24px;line-height:1.05;font-weight:950;letter-spacing:-.035em;text-transform:uppercase}.hotkey-subtitle{margin-top:7px;color:var(--txt2);font-size:13px;line-height:1.4;max-width:70ch}.hotkey-close{border:1px solid var(--border);background:var(--bg3);color:var(--txt);width:34px;height:34px;border-radius:999px;font-size:20px;font-weight:900;line-height:1;cursor:pointer;flex-shrink:0}.hotkey-body{padding:0 20px 20px;overflow-y:auto;min-height:0}.hotkey-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px}.hotkey-mini-card,.penalty-item,.jam-popup-row{border:1px solid var(--border);border-radius:12px;background:var(--bg3);padding:10px 12px}.hotkey-kbd{display:inline-flex;align-items:center;justify-content:center;min-width:28px;height:24px;border-radius:7px;border:1px solid var(--lead-b);background:var(--lead-bg);color:var(--lead-c);font-size:13px;font-weight:950;margin-right:8px}.hotkey-meta{color:var(--txt2);font-size:12px;margin-top:4px;line-height:1.35}.hotkey-link{color:var(--lead-c);text-decoration:none;font-weight:800}.hotkey-footerline{margin-top:14px;padding-top:12px;border-top:1px solid var(--sep);display:flex;justify-content:space-between;gap:12px;color:var(--txt2);font-size:12px;flex-wrap:wrap}.penalty-tabs{display:none;gap:8px;flex-wrap:wrap;margin-bottom:12px;position:sticky;top:0;z-index:2;padding:4px 0 10px;background:transparent}.penalty-tab{border:1px solid var(--border);background:var(--bg3);color:var(--txt);border-radius:999px;padding:7px 12px;font-family:inherit;font-size:12px;font-weight:900;cursor:pointer}.penalty-tab.active{border-color:var(--lead-b);background:var(--lead-bg);color:var(--lead-c)}.penalty-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:8px}.penalty-code{display:inline-flex;align-items:center;justify-content:center;min-width:30px;height:28px;border-radius:8px;background:var(--lead-bg);color:var(--lead-c);border:1px solid var(--lead-b);font-weight:950;margin-right:8px}.penalty-note{margin:0 0 12px;color:var(--txt2);font-size:12px;line-height:1.45}.jam-popup-list{display:flex;flex-direction:column;gap:8px}.jam-popup-row{display:grid;grid-template-columns:52px 110px auto 95px;gap:10px;align-items:center}.jam-popup-score{font-size:18px;font-weight:950;font-variant-numeric:tabular-nums}.jam-popup-detail{color:var(--txt2);font-size:12px;line-height:1.3}@media(max-width:700px){.jam-popup-row{grid-template-columns:1fr;gap:4px}.hotkey-card-header{padding:15px 16px 0}.hotkey-body{padding:0 16px 16px}}
+
+
+/* Full-history overlay uses the same compact row language as the main jam history. */
+#history-popup-list{gap:8px;}
+#history-popup-list .jam-row{padding:9px 12px;min-height:42px;border-radius:12px;}
+#history-popup-list .jam-num,#history-popup-list .jam-scores,#history-popup-list .jam-scorer{font-size:13px;}
+#history-popup-list .jam-scores{min-width:86px;}
+#history-popup-list .jam-scorer{font-weight:800;}
+#history-popup-list .badge{font-size:9px;padding:4px 8px;}
+#history-popup-list .jam-micro-div{height:18px;}
+
+
+/* ── Full history overlay readability bump ── */
+#modal-history .hotkey-card{width:min(1040px,96vw);}
+#modal-history .jam-popup-list{gap:12px;}
+#modal-history .jam-popup-fullrow{padding:10px 14px;min-height:42px;gap:11px;}
+#modal-history .jam-popup-fullrow .jam-num{font-size:12px;min-width:40px;font-weight:850;}
+#modal-history .jam-popup-fullrow .jam-scores{font-size:12px;min-width:82px;font-weight:850;}
+#modal-history .jam-popup-fullrow .jam-scorer{font-size:12px;font-weight:750;}
+#modal-history .jam-popup-fullrow .badge{font-size:10px;padding:4px 9px;}
+#modal-history .jam-popup-fullrow .jam-micro-div{height:17px;}
+
+
+#tmav-credit-version{
+  margin-left:auto;
+  white-space:nowrap;
+  text-align:right;
+  color:var(--txt2);
+  font-weight: 400;
+}
+@media(max-width:760px){
+  #tmav-credit-version{
+    margin-left:0;
+    width:100%;
+    text-align:left;
+  }
+}
+
+
+
+
+
+
+/* About overlay footer layout fix */
+#modal-about .hotkey-body{
+  padding-bottom:24px;
+}
+#modal-about .about-footerline{
+  display:grid;
+  grid-template-columns:1fr auto;
+  align-items:center;
+  gap:18px;
+  margin-top:22px;
+  padding-top:14px;
+  border-top:1px solid var(--sep);
+  width:100%;
+  overflow:visible;
+}
+#modal-about .about-license{
+  white-space:nowrap;
+}
+#tmav-credit-version{
+  white-space:nowrap;
+  text-align:right;
+  color:var(--txt2);
+  font-weight:400;
+}
+@media(max-width:760px){
+  #modal-about .about-footerline{
+    grid-template-columns:1fr;
+    gap:8px;
+  }
+  #tmav-credit-version{
+    text-align:left;
+  }
+}
+
+
+/* ── About overlay footer final cleanup ──
+   Footer lives outside .hotkey-body, so it needs its own padding.
+   This removes the stray divider line and prevents bottom clipping. */
+#modal-about .hotkey-card{
+  gap:0;
+}
+#modal-about .hotkey-body{
+  padding-bottom:0;
+}
+#modal-about .about-footerline{
+  display:grid;
+  grid-template-columns:1fr auto;
+  align-items:center;
+  gap:18px;
+  margin:0;
+  padding:18px 20px 20px;
+  border-top:0 !important;
+  width:100%;
+  overflow:visible;
+  line-height:1.35;
+}
+#modal-about .about-license,
+#modal-about #tmav-credit-version{
+  white-space:nowrap;
+}
+#modal-about #tmav-credit-version{
+  margin-left:0;
+  text-align:right;
+  color:var(--txt2);
+  font-weight:400;
+}
+@media(max-width:760px){
+  #modal-about .about-footerline{
+    grid-template-columns:1fr;
+    gap:8px;
+    padding:16px 20px 20px;
+  }
+  #modal-about #tmav-credit-version{
+    text-align:left;
+  }
+}
+
 </style>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🟤</text></svg>">
 </head>
@@ -623,7 +751,7 @@ body:not(.remote) #disc { display: none !important; }
   <div class="rotate-warning-inner">
     <div class="rotate-warning-icon">↻</div>
     <div class="rotate-warning-title">Rotate Screen</div>
-    <div class="rotate-warning-copy">This announcer view is designed for landscape. Please turn your phone sideways.</div>
+    <div class="rotate-warning-copy">This announcer's view is designed for landscape. Please turn your phone or tablet sideways.</div>
   </div>
 </div>
 
@@ -830,7 +958,7 @@ body:not(.remote) #disc { display: none !important; }
   <!-- BOTTOM ROW: jam history | divider | period summary -->
   <div class="bottomrow">
     <div class="hist-panel">
-      <div class="lbl" style="margin-bottom:3px;">Jam history</div>
+      <div class="hist-header"><div class="lbl">Jam history</div><div class="hist-header-hint">Type [H] to view full period jam history</div></div>
       <div class="hist-rows" id="jam-history"></div>
     </div>
     <div class="bottom-vdiv"></div>
@@ -865,6 +993,12 @@ body:not(.remote) #disc { display: none !important; }
 
 </div><!-- /app -->
 
+
+<!-- Hotkey popups -->
+<div class="hotkey-modal" id="modal-about" aria-hidden="true"><div class="hotkey-card" role="dialog" aria-modal="true" aria-labelledby="about-title"><div class="hotkey-card-header"><div><div class="hotkey-title" id="about-title">🟤 Thin Mint Announcer's View</div><div class="hotkey-subtitle">A compact, trackside CRG readout for announcers: clocks, score, lineups, jammer status, penalty heat, jam history, and the quick reference bits you need while the game is moving.</div></div><button class="hotkey-close" type="button" data-close-modal aria-label="Close">×</button></div><div class="hotkey-body"><div class="hotkey-grid"><div class="hotkey-mini-card"><span class="hotkey-kbd">A</span><strong>About</strong><div class="hotkey-meta">Shows this help and version screen.</div></div><div class="hotkey-mini-card"><span class="hotkey-kbd">H</span><strong>Jam History</strong><div class="hotkey-meta">Shows the full saved jam history for the current period.</div></div><div class="hotkey-mini-card"><span class="hotkey-kbd">P</span><strong>Penalty Codes</strong><div class="hotkey-meta">Shows the penalty code reference for the active CRG ruleset.</div></div><div class="hotkey-mini-card"><span class="hotkey-kbd">D</span><strong>Dark / Light</strong><div class="hotkey-meta">Toggles the announcer view between dark mode and light mode.</div></div></div></div><div class="hotkey-footerline about-footerline"><span class="about-license">Licensed under <a class="hotkey-link" href="https://www.gnu.org/licenses/gpl-3.0.en.html" target="_blank" rel="noopener">GNU GPL v3.0</a></span><span id="tmav-credit-version">Another ✨Thinmintovation✨ | v1.0.0</span></div></div></div></div>
+<div class="hotkey-modal" id="modal-history" aria-hidden="true"><div class="hotkey-card" role="dialog" aria-modal="true" aria-labelledby="history-title"><div class="hotkey-card-header"><div><div class="hotkey-title" id="history-title">Jam History</div><div class="hotkey-subtitle" id="history-subtitle">Current period</div></div><button class="hotkey-close" type="button" data-close-modal aria-label="Close">×</button></div><div class="hotkey-body"><div class="jam-popup-list" id="history-popup-list"></div></div></div></div>
+<div class="hotkey-modal" id="modal-penalties" aria-hidden="true"><div class="hotkey-card" role="dialog" aria-modal="true" aria-labelledby="penalty-title"><div class="hotkey-card-header"><div><div class="hotkey-title" id="penalty-title">Penalty Codes</div><div class="hotkey-subtitle">Quick announcer reference. Ruleset is auto-detected from the active CRG game.</div></div><button class="hotkey-close" type="button" data-close-modal aria-label="Close">×</button></div><div class="hotkey-body"><div class="penalty-tabs" id="penalty-tabs"></div><p class="penalty-note" id="penalty-note"></p><div class="penalty-list" id="penalty-list"></div></div></div></div>
+
 <!-- Disconnect overlay -->
 <div id="disc">
   <p>Connection lost — reconnecting…</p>
@@ -873,6 +1007,25 @@ body:not(.remote) #disc { display: none !important; }
 
 <script>
 'use strict';
+
+function setTheme(mode) {
+  const next = mode === 'light' ? 'light' : 'dark';
+  document.body.classList.toggle('light', next === 'light');
+  document.body.classList.toggle('dark', next === 'dark');
+  try { localStorage.setItem('tm-announcer-theme', next); } catch (_) {}
+}
+
+function toggleTheme() {
+  setTheme(document.body.classList.contains('light') ? 'dark' : 'light');
+}
+
+(function initSavedTheme() {
+  try {
+    const saved = localStorage.getItem('tm-announcer-theme');
+    if (saved === 'light' || saved === 'dark') setTheme(saved);
+  } catch (_) {}
+})();
+
 
 /*
   This file is intentionally dependency-free:
@@ -889,10 +1042,17 @@ let powerJams     = {1: 0, 2: 0};   // power jams earned this period (opponent j
 let prevJammerBox = {1: false, 2: false};  // previous jammer box state for transition detection
 let starPasses  = {1: 0, 2: 0};   // star passes executed this period
 let prevStarPass  = {1: false, 2: false};  // previous star pass state for transition detection
+let currentJamLostLead = {1: false, 2: false};  // live lost-lead badge for the active jam
+let hadLeadThisJam = {1: false, 2: false};      // remembers who had lead before a box/lost event
+let jamLapState = {
+  1: { shown:false, lap:0, lastTrip:0, points:0 },
+  2: { shown:false, lap:0, lastTrip:0, points:0 }
+};
+let currentJamStarPassTeam = 0;                 // records which team completed a star pass this jam
 let trackedPeriod = 1;             // reset powerJams/starPasses when period changes
 let lastGameSignature = localStorage.getItem('tm-announcer-game-signature') || '';
 let newGameCleared = false;
-const MAX_HIST = 40;
+const MAX_HIST = 80;
 const CG = 'ScoreBoard.CurrentGame.';
 const JAM_HISTORY_KEY = 'tm-announcer-jam-history';
 
@@ -1067,29 +1227,258 @@ function renderClock() {
 }
 
 // lead/star pass star
+function jammerIsPenalized(t) {
+  // Lead is lost immediately when the jammer is sent to the box. CRG may
+  // clear Team(n).Lead slightly after BoxTrip/Fielding updates, so the view
+  // suppresses the glowing lead star as soon as the jammer appears boxed.
+  return activeBoxTrip(t, 'Jammer') !== null || fldgb(t, 'Jammer', 'PenaltyBox');
+}
 function starCls(t) {
   if (!vb('InJam'))              return 'star-nil';
+  if (jammerIsPenalized(t))      return 'star-nil';
+  if (currentJamLostLead[t])     return 'star-nil';
   if (vb(`Team(${t}).StarPass`)) return 'star-sp';
   if (vb(`Team(${t}).Lead`))     return 'star-lead';
   return 'star-nil';
 }
 
-// jammer trip readout
-function tripHtml(t) {
-  if (!vb('InJam')) return '';
-  const lead = vb(`Team(${t}).Lead`), sp = vb(`Team(${t}).StarPass`);
-  const color = sp ? 'var(--sp-c)' : lead ? 'var(--lead-c)' : 'var(--txt2)';
-  const score = vn(`Team(${t}).TripScore`, 0);
-  // Look up current trip number via RunningOrEndedTeamJam → TeamJam.CurrentTripNumber
-  const tjId = v(`Team(${t}).RunningOrEndedTeamJam`);
-  let tripNum = null;
-  if (tjId) {
-    for (const [k, val] of Object.entries(S)) {
-      if (k.includes(`.TeamJam(${tjId}).CurrentTripNumber`)) { tripNum = parseInt(val); break; }
+// jammer lap readout
+function currentJamNumberForReadout() {
+  return vb('InJam') ? vn('UpcomingJamNumber', 1) : Math.max(1, vn('UpcomingJamNumber', 1) - 1);
+}
+
+function currentTeamJamIds(t) {
+  const ids = new Set([String(t), `Team_${t}`]);
+  const running = v(`Team(${t}).RunningOrEndedTeamJam`, '').trim();
+  if (running) ids.add(running);
+  return ids;
+}
+
+function latestTeamJamValue(t, prop, fb = '') {
+  const p = vn('CurrentPeriodNumber', 1);
+  const activeJam = currentJamNumberForReadout();
+  const ids = currentTeamJamIds(t);
+
+  // First try exact current-period/current-jam/team-jam paths.
+  for (const [k, val] of Object.entries(S)) {
+    for (const id of ids) {
+      if (k.includes(`.Period(${p}).Jam(${activeJam}).TeamJam(${id}).${prop}`)) return val;
     }
   }
-  const label = tripNum != null ? `Trip ${tripNum} · +${score}` : `+${score}`;
-  return `<span style="font-size:9px;white-space:nowrap;color:${color}">${label}</span>`;
+
+  // Then fall back to the newest matching TeamJam field we can find.
+  let bestP = -1, bestJ = -1, bestVal = fb;
+  for (const [k, val] of Object.entries(S)) {
+    let matched = false;
+    for (const id of ids) {
+      if (k.includes(`.TeamJam(${id}).${prop}`)) { matched = true; break; }
+    }
+    if (!matched) continue;
+    const m = k.match(/Period\((\d+)\).*?Jam\((\d+)\)/);
+    if (!m) continue;
+    const pp = parseInt(m[1], 10), jj = parseInt(m[2], 10);
+    if (pp > bestP || (pp === bestP && jj > bestJ)) {
+      bestP = pp; bestJ = jj; bestVal = val;
+    }
+  }
+  return bestVal;
+}
+
+function latestScoringTripInfo(t) {
+  const p = vn('CurrentPeriodNumber', 1);
+  const activeJam = currentJamNumberForReadout();
+  const ids = currentTeamJamIds(t);
+  let bestTrip = 0;
+  let score = null;
+
+  for (const [k, val] of Object.entries(S)) {
+    const m = k.match(/Period\((\d+)\).*?Jam\((\d+)\).*?TeamJam\(([^)]+)\).*?ScoringTrip\((\d+)\)(?:\.([^.]*)|$)/);
+    if (!m) continue;
+    const pp = parseInt(m[1], 10), jj = parseInt(m[2], 10);
+    const teamJam = String(m[3]);
+    const trip = parseInt(m[4], 10);
+    const prop = String(m[5] || '').toLowerCase();
+    if (pp !== p || jj !== activeJam) continue;
+    if (!ids.has(teamJam)) continue;
+    if (!Number.isFinite(trip)) continue;
+    if (trip > bestTrip) {
+      bestTrip = trip;
+      score = null;
+    }
+    if (trip === bestTrip && ['score','points','tripscore','scorevalue','value'].includes(prop)) {
+      const n = parseFloat(val);
+      if (Number.isFinite(n)) score = n;
+    }
+  }
+  return { trip: bestTrip, score };
+}
+
+function jammerHasCompletedInitialPass(t) {
+  if (!vb('InJam')) return false;
+  if (vb(`Team(${t}).Lead`)) return true;
+  if (vb(`Team(${t}).StarPass`)) return true;
+  if (latestScoringTripInfo(t).trip > 0) return true;
+
+  const truthy = value => ['true','1','yes','complete','completed'].includes(String(value || '').trim().toLowerCase());
+  const fields = [
+    'InitialPassComplete',
+    'InitialPassCompleted',
+    'InitialTripComplete',
+    'InitialTripCompleted',
+    'CompletedInitialPass',
+    'CompletedInitialTrip',
+    'HasCompletedInitialPass',
+    'HasCompletedInitialTrip'
+  ];
+  for (const field of fields) {
+    if (truthy(v(`Team(${t}).${field}`, ''))) return true;
+    if (truthy(latestTeamJamValue(t, field, ''))) return true;
+    if (truthy(fldg(t, 'Jammer', field, ''))) return true;
+  }
+  return false;
+}
+
+// jammer lap readout
+function tripHtml(t) {
+  if (!vb('InJam')) return '';
+
+  const st = jamLapState[t] || { shown:false, lap:0, points:0 };
+  if (!st.shown || st.lap < 1) return '';
+
+  const lead = vb(`Team(${t}).Lead`) && !jammerIsPenalized(t) && !currentJamLostLead[t];
+  const sp   = vb(`Team(${t}).StarPass`);
+  const color = sp ? 'var(--sp-c)' : lead ? 'var(--lead-c)' : 'var(--txt2)';
+
+  const pointLabel = st.points && st.points > 0 ? ` · +${st.points}` : '';
+  return `<span style="font-size:10px;font-weight:400;white-space:nowrap;color:${color}">L${st.lap}${pointLabel}</span>`;
+}
+
+function resetJamLapState() {
+  jamLapState = {
+    1: { shown:false, lap:0, lastTrip:0, points:0, lastJamScore:0 },
+    2: { shown:false, lap:0, lastTrip:0, points:0, lastJamScore:0 }
+  };
+}
+
+function updateJamLapState() {
+  if (!vb('InJam')) return;
+
+  for (const t of [1, 2]) {
+    const st = jamLapState[t] || (jamLapState[t] = { shown:false, lap:0, lastTrip:0, points:0, lastJamScore:0 });
+    const leadNow = vb(`Team(${t}).Lead`) && !jammerIsPenalized(t) && !currentJamLostLead[t];
+    const tripInfo = latestScoringTripInfo(t);
+    const tripNum = Number.isFinite(Number(tripInfo.trip)) ? Number(tripInfo.trip) : 0;
+    const jamScore = vn(`Team(${t}).JamScore`, 0);
+
+    let tripPoints = tripInfo.score;
+    if (tripPoints === null || tripPoints === undefined) {
+      const liveTripScore = vn(`Team(${t}).TripScore`, null);
+      tripPoints = liveTripScore === null ? 0 : liveTripScore;
+    }
+    tripPoints = Number.isFinite(Number(tripPoints)) ? Number(tripPoints) : 0;
+
+    // First lap / initial pass stays quiet. The readout starts at L1 only
+    // when lead is awarded, or when the first scoring trip is actually added.
+    if (!st.shown) {
+      if (leadNow || tripNum > 0 || tripPoints > 0 || jamScore > 0) {
+        st.shown = true;
+        st.lap = 1;
+        st.lastTrip = tripNum > 0 ? tripNum : 0;
+        st.lastJamScore = jamScore;
+        st.points = (tripPoints > 0 ? tripPoints : (jamScore > 0 ? jamScore : 0));
+      } else {
+        st.lap = 0;
+        st.points = 0;
+        st.lastTrip = 0;
+        st.lastJamScore = 0;
+      }
+      continue;
+    }
+
+    // Preferred path: CRG exposes scoring trip numbers. If the first real
+    // scoring trip arrives after lead was called, keep it on L1 and add points.
+    if (tripNum > st.lastTrip) {
+      const firstRecordedTripAfterLead = st.lastTrip === 0 && st.lap === 1 && st.points === 0;
+      const delta = Math.max(1, tripNum - st.lastTrip);
+      if (!firstRecordedTripAfterLead) st.lap += delta;
+      st.lastTrip = tripNum;
+      st.points = tripPoints > 0 ? tripPoints : Math.max(0, jamScore - st.lastJamScore);
+      st.lastJamScore = jamScore;
+      continue;
+    }
+
+    // Fallback path: some CRG data feeds do not expose the trip index in a
+    // path this view can reliably match. In that case, detect scoring-trip
+    // additions from JamScore increases. First score after lead stays L1;
+    // later score increases advance L2, L3, etc.
+    if (jamScore > st.lastJamScore) {
+      const deltaScore = jamScore - st.lastJamScore;
+      const firstScoreAfterLead = st.lastTrip === 0 && st.lap === 1 && st.points === 0 && st.lastJamScore === 0;
+      if (!firstScoreAfterLead) st.lap += 1;
+      st.points = tripPoints > 0 ? tripPoints : deltaScore;
+      st.lastJamScore = jamScore;
+      continue;
+    }
+
+    // Same lap: allow points to appear/update once entered, but don't show +0.
+    st.points = tripPoints > 0 ? tripPoints : 0;
+    st.lastJamScore = jamScore;
+  }
+}
+
+// penalty-code tooltip helpers
+const TMAV_BOX_PENALTY_LOOKUP = {
+  // WFTDA / MRDA / JRDA flat-track shorthand
+  A:'High Block',
+  B:'Back Block',
+  L:'Low Block',
+  H:'Head Block',
+  F:'Forearm',
+  E:'Leg Block',
+  C:'Illegal Contact',
+  D:'Direction',
+  M:'Multiplayer',
+  P:'Illegal Position',
+  X:'Cut / Illegal Re-Entry',
+  N:'Interference',
+  I:'Illegal Procedure',
+  G:'Misconduct / Gross Misconduct',
+
+  // RDCL banked-track shorthand
+  AS:'Above the Shoulders',
+  S:'Stopping',
+  DB:'Directional Blocking',
+  MB:'Multi-Player Blocking',
+  BB:'Blocking Out of Bounds',
+  AB:'Assisting Out of Bounds',
+  FR:'Failure to Reform',
+  OP:'Skating Out of Play',
+  BP:'Blocking Out of Play',
+  AP:'Assisting Out of Play',
+  SB:'Skating Out of Bounds',
+  CT:'Cutting the Track',
+  IB:'Illegal Blocks',
+  IP:'Illegal Procedures',
+  DG:'Delay of Game',
+  MS:'Misconduct',
+  GM:'Gross Misconduct'
+};
+
+function penaltyTooltip(sym) {
+  const raw = String(sym || '').trim();
+  if (!raw) return 'Penalty box';
+
+  // CRG may send one code, repeated codes, or a separated list. Keep the
+  // original value visible while expanding anything we recognize.
+  const parts = raw
+    .split(/[\s,;/|+]+/)
+    .map(p => p.trim().toUpperCase())
+    .filter(Boolean);
+
+  const expanded = (parts.length ? parts : [raw.toUpperCase()])
+    .map(code => `${code} = ${TMAV_BOX_PENALTY_LOOKUP[code] || 'Unlisted / event-specific code'}`);
+
+  return `Penalty box: ${expanded.join(' · ')}`;
 }
 
 // penalty box badge
@@ -1099,7 +1488,7 @@ function boxHtml(t, pos) {
   if (!bt && time <= 0) return '';
 
   let s = 'BOX';
-  if (bt && bt.sym) s += ` · ${bt.sym}`;
+  if (bt && bt.sym) s += ` · ${escHtml(bt.sym)}`;
   if (time > 0)     s += ` <span style="opacity:.7">· ${fmtMs(time)}</span>`;
   return `<span class="box-badge">${s}</span>`;
 }
@@ -1107,6 +1496,7 @@ function boxHtml(t, pos) {
 // little team status badges
 function teamBadgesHtml(t) {
   let out = '';
+  if (vb('InJam') && currentJamLostLead[t]) out += `<span class="badge b-lost">Lost lead</span>`;
   if (vb(`Team(${t}).Calloff`)) out += `<span class="badge b-call">Calloff</span>`;
   if (vb(`Team(${t}).Injury`))  out += `<span class="badge b-lost">Injury</span>`;
   return out;
@@ -1207,7 +1597,7 @@ function captureJam(jammerSnap = {}) {
   if (!jName) jName = '—';
   const oCls  = lost ? 'b-lost' : call ? 'b-call' : 'b-dim';
   const oLbl  = lost ? 'Lost lead' : call ? 'Calloff' : 'Time';
-  jamHistory.unshift({ p, jamN, t1s, t2s, lTeam, jName, oCls, oLbl, lost });
+  jamHistory.unshift({ p, jamN, t1s, t2s, lTeam, jName, oCls, oLbl, lost, spTeam: currentJamStarPassTeam || 0 });
   if (jamHistory.length > MAX_HIST) jamHistory.pop();
   saveJamHistory();
   // Scroll history panel to top so newest entry is visible
@@ -1215,21 +1605,25 @@ function captureJam(jammerSnap = {}) {
   if (hr) hr.scrollTop = 0;
 }
 
+function jamHistoryRowHtml(j, i, extraClass = '') {
+  const cls = i % 2 === 0 ? 'hi' : 'lo';
+  const scores = `+${escHtml(j.t1s)} <span style="color:var(--txt3)">vs</span> +${escHtml(j.t2s)}`;
+  const lbl  = j.lost ? 'Lost lead' : j.lTeam ? `T${j.lTeam} Lead` : 'No lead';
+  const lCls = j.lost ? 'b-lost' : j.lTeam ? 'b-lead' : 'b-dim';
+  const spBadge = j.spTeam ? `<span class="badge b-sp">T${escHtml(j.spTeam)} Star Pass</span>` : '';
+  return `<div class="jam-row ${cls} ${extraClass}">
+    <span class="jam-num">J${escHtml(j.jamN)}</span>
+    <span class="jam-micro-div"></span>
+    <span class="jam-scores">${scores}</span>
+    <span class="badge ${lCls}">${escHtml(lbl)}</span>
+    <span class="jam-scorer">${escHtml(j.jName || '—')}</span>
+    ${spBadge}
+    <span class="jam-outcome"><span class="badge ${escHtml(j.oCls || 'b-dim')}">${escHtml(j.oLbl || 'Time')}</span></span>
+  </div>`;
+}
+
 function histHtml() {
-  return jamHistory.map((j, i) => {
-    const cls = i % 2 === 0 ? 'hi' : 'lo';
-    const scores = `+${j.t1s} <span style="color:var(--txt3)">vs</span> +${j.t2s}`;
-    const lbl  = j.lost ? 'Lost lead' : j.lTeam ? `T${j.lTeam} Lead` : 'No lead';
-    const lCls = j.lost ? 'b-lost' : j.lTeam ? 'b-lead' : 'b-dim';
-    return `<div class="jam-row ${cls}">
-      <span class="jam-num">J${j.jamN}</span>
-      <span class="jam-micro-div"></span>
-      <span class="jam-scores">${scores}</span>
-      <span class="badge ${lCls}">${lbl}</span>
-      <span class="jam-scorer">${j.jName}</span>
-      <span class="jam-outcome"><span class="badge ${j.oCls}">${j.oLbl}</span></span>
-    </div>`;
-  }).join('');
+  return jamHistory.slice(0, 4).map((j, i) => jamHistoryRowHtml(j, i)).join('');
 }
 
 // period summary
@@ -1339,7 +1733,14 @@ function applyState(updates) {
   };
   Object.assign(S, updates);
   maybeClearHistoryForNewGame();
-  if (wasInJam && !vb('InJam')) captureJam(jammerSnap);
+  const nowInJam = vb('InJam');
+  if (!wasInJam && nowInJam) {
+    currentJamLostLead = {1: false, 2: false};
+    hadLeadThisJam = {1: false, 2: false};
+    currentJamStarPassTeam = 0;
+    resetJamLapState();
+  }
+  if (wasInJam && !nowInJam) captureJam(jammerSnap);
 
   // Reset power jam counts when period changes
   const curPeriod = vn('CurrentPeriodNumber', 1);
@@ -1348,14 +1749,24 @@ function applyState(updates) {
     prevJammerBox = {1: false, 2: false};
     starPasses = {1: 0, 2: 0};
     prevStarPass = {1: false, 2: false};
+    currentJamLostLead = {1: false, 2: false};
+    hadLeadThisJam = {1: false, 2: false};
+    currentJamStarPassTeam = 0;
+    resetJamLapState();
     trackedPeriod = curPeriod;
     jamHistory = [];
     saveJamHistory();
   }
 
-  // Detect jammer box transitions (false → true): awards a power jam to the OTHER team
+  // Detect jammer box transitions (false → true): awards a power jam to the OTHER team.
+  // Lost badge is live-correctable: if the operator accidentally toggles Lost
+  // and clears it, the badge clears too. A lead jammer in the box still shows
+  // Lost lead for the remainder of that box event.
   for (const t of [1, 2]) {
     const boxNow = activeBoxTrip(t, 'Jammer') !== null;
+    const leadFlag = vb(`Team(${t}).Lead`);
+    if (nowInJam && leadFlag) hadLeadThisJam[t] = true;
+    currentJamLostLead[t] = nowInJam && (vb(`Team(${t}).Lost`) || (hadLeadThisJam[t] && boxNow));
     if (boxNow && !prevJammerBox[t]) powerJams[t === 1 ? 2 : 1]++;
     prevJammerBox[t] = boxNow;
   }
@@ -1363,9 +1774,12 @@ function applyState(updates) {
   // Detect star pass transitions (false → true): count per team
   for (const t of [1, 2]) {
     const spNow = vb(`Team(${t}).StarPass`);
+    if (spNow) currentJamStarPassTeam = t;
     if (spNow && !prevStarPass[t]) starPasses[t]++;
     prevStarPass[t] = spNow;
   }
+
+  updateJamLapState();
 
   // Local 30s box timers — fallback when CRG doesn't supply BoxTrip.Time
   for (const t of [1, 2]) {
@@ -1751,18 +2165,74 @@ function startDemo() {
   applyState(buildState());
 
   // ── Pre-seed jam history (jams 4–7) so the history panel isn't empty ──
-  // Format: { p, jamN, t1s, t2s, lTeam, jName, oCls, oLbl, lost }
+  // Format: { p, jamN, t1s, t2s, lTeam, jName, oCls, oLbl, lost, spTeam }
   jamHistory = [
-    { p:1, jamN:7, t1s:4, t2s:0, lTeam:1, jName:"Frankly Jammin'",   oCls:'b-call', oLbl:'Calloff',   lost:false },
-    { p:1, jamN:6, t1s:3, t2s:5, lTeam:2, jName:'Oops, All Jammers!', oCls:'b-dim',  oLbl:'Time',      lost:false },
-    { p:1, jamN:5, t1s:0, t2s:2, lTeam:0, jName:'—',                  oCls:'b-dim',  oLbl:'Time',      lost:false },
-    { p:1, jamN:4, t1s:6, t2s:3, lTeam:1, jName:"Frankly Jammin'",   oCls:'b-call', oLbl:'Calloff',   lost:false },
+    { p:1, jamN:7, t1s:4, t2s:0, lTeam:1, jName:"Frankly Jammin'",   oCls:'b-call', oLbl:'Calloff',   lost:false, spTeam:0 },
+    { p:1, jamN:6, t1s:3, t2s:5, lTeam:2, jName:'Oops, All Jammers!', oCls:'b-dim',  oLbl:'Time',      lost:false, spTeam:0 },
+    { p:1, jamN:5, t1s:0, t2s:2, lTeam:0, jName:'—',                  oCls:'b-dim',  oLbl:'Time',      lost:false, spTeam:0 },
+    { p:1, jamN:4, t1s:6, t2s:3, lTeam:1, jName:"Frankly Jammin'",   oCls:'b-call', oLbl:'Calloff',   lost:false, spTeam:0 },
   ];
   saveJamHistory();
   render();   // repaint now that history is populated
 
   setInterval(tick, 1000);
 }
+
+
+// ── Hotkey popups ──
+const TMAV_VERSION='v1.0.0';
+const TMAV_BASE_CODES=[['A','High Block'],['B','Back Block'],['L','Low Block'],['H','Head Block'],['F','Forearm'],['E','Leg Block'],['C','Illegal Contact'],['D','Direction'],['M','Multiplayer'],['P','Illegal Position'],['X','Cut / Illegal Re-Entry'],['N','Interference'],['I','Illegal Procedure'],['G','Misconduct / Gross Misconduct']];
+const TMAV_RDCL_CODES=[['AS','Above the Shoulders'],['A','Arms'],['B','Back Blocking'],['L','Low Blocking'],['S','Stopping'],['DB','Directional Blocking'],['MB','Multi-Player Blocking'],['BB','Blocking Out of Bounds'],['AB','Assisting Out of Bounds'],['FR','Failure to Reform'],['OP','Skating Out of Play'],['BP','Blocking Out of Play'],['AP','Assisting Out of Play'],['SB','Skating Out of Bounds'],['CT','Cutting the Track'],['IB','Illegal Blocks'],['IP','Illegal Procedures'],['DG','Delay of Game'],['MS','Misconduct'],['GM','Gross Misconduct'],['F','Fighting']];
+const PENALTY_RULESETS={WFTDA:{note:'WFTDA-family flat-track codes. Current WFTDA cues group Cut and Illegal Re-Entry under X for Gaining Position.',codes:TMAV_BASE_CODES},MRDA:{note:'MRDA uses the WFTDA Rules of Flat Track Roller Derby framework, so this list mirrors the WFTDA-family flat-track codes.',codes:TMAV_BASE_CODES},JRDA:{note:'JRDA follows the WFTDA-licensed flat-track rules with youth-specific addenda, so this list mirrors the WFTDA-family flat-track codes.',codes:TMAV_BASE_CODES},RDCL:{note:'RDCL banked-track codes from the 2019 RDCL V3.2 officials hand-signal/rules materials. Confirm against the event packet if an event uses house modifications.',codes:TMAV_RDCL_CODES}};
+let activePenaltyRuleset='WFTDA';
+function escHtml(s){return String(s??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));}
+function openModal(id){
+  closeModals();
+  const m=el(id);
+  if(!m)return;
+  if(id==='modal-history')renderHistoryPopup();
+  if(id==='modal-penalties')renderPenaltyPopup();
+  const v=el('tmav-version');
+  if(v)v.textContent=TMAV_VERSION;
+  m.classList.add('show');
+  m.setAttribute('aria-hidden','false');
+}
+function toggleModal(id){
+  const m=el(id);
+  if(!m)return;
+  if(m.classList.contains('show')){
+    m.classList.remove('show');
+    m.setAttribute('aria-hidden','true');
+    return;
+  }
+  openModal(id);
+}
+function closeModals(){document.querySelectorAll('.hotkey-modal.show').forEach(m=>{m.classList.remove('show');m.setAttribute('aria-hidden','true');});}
+function renderHistoryPopup(){const p=vn('CurrentPeriodNumber',1);const rows=jamHistory.filter(j=>Number(j.p)===Number(p)).slice().sort((a,b)=>b.jamN-a.jamN);txt('history-subtitle',`Period ${p} · ${rows.length||0} saved jam${rows.length===1?'':'s'}`);const list=el('history-popup-list');if(!list)return;if(!rows.length){list.innerHTML='<div class="hotkey-mini-card"><strong>No jams saved yet.</strong><div class="hotkey-meta">History will populate as jams end.</div></div>';return;}list.innerHTML=rows.map((j,i)=>jamHistoryRowHtml(j,i,'jam-popup-fullrow')).join('');}
+function detectedPenaltyRuleset(){
+  const name=v('RulesetName','').toUpperCase();
+  if(name.includes('RDCL'))return 'RDCL';
+  if(name.includes('JRDA'))return 'JRDA';
+  if(name.includes('MRDA'))return 'MRDA';
+  if(name.includes('WFTDA'))return 'WFTDA';
+  return 'WFTDA';
+}
+function renderPenaltyPopup(){
+  const ruleset=detectedPenaltyRuleset();
+  activePenaltyRuleset=ruleset;
+  const tabs=el('penalty-tabs');
+  if(tabs)tabs.innerHTML='';
+  const data=PENALTY_RULESETS[ruleset] || PENALTY_RULESETS.WFTDA;
+  const rawName=v('RulesetName','');
+  const detectedLine=rawName ? `Detected from CRG: ${rawName}` : `Detected ruleset: ${ruleset}`;
+  txt('penalty-note',`${detectedLine}. ${data.note}`);
+  const list=el('penalty-list');
+  if(list){list.innerHTML=data.codes.map(([code,label])=>`<div class="penalty-item"><span class="penalty-code">${escHtml(code)}</span><strong>${escHtml(label)}</strong></div>`).join('');}
+}
+document.addEventListener('click',e=>{const closeBtn=e.target.closest('[data-close-modal]');if(closeBtn)closeModals();if(e.target.classList&&e.target.classList.contains('hotkey-modal'))closeModals();});
+document.addEventListener('keydown',e=>{const tag=(e.target&&e.target.tagName||'').toLowerCase();if(tag==='input'||tag==='textarea'||e.target?.isContentEditable)return;const key=e.key.toLowerCase();if(key==='escape'){closeModals();return;}if(key==='a'){e.preventDefault();toggleModal('modal-about');}if(key==='h'){e.preventDefault();toggleModal('modal-history');}if(key==='p'){e.preventDefault();toggleModal('modal-penalties');}
+  if (key === 'd') { toggleTheme(); return; }
+});
 
 // status text/dot helper
 function setStatus(state, label) {
