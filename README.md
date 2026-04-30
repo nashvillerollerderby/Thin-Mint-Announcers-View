@@ -6,9 +6,7 @@
 [![Maintenance](https://img.shields.io/badge/maintained-yes-brightgreen.svg)](./)
 ![Trans Rights](https://pride-badges.pony.workers.dev/static/v1?label=trans%20rights&stripeWidth=6&stripeColors=5BCEFA,F5A9B8,FFFFFF,F5A9B8,5BCEFA)
 
-A clean, fast **announcer interface** for CRG Scoreboard, built for internal use by announcers and production staff.
-
-Thin Mint Announcer’s View is a streamlined, information-dense display built on top of CRG Scoreboard data, designed specifically for announcers, stream talent, and production crew.
+**Thin Mint Announcer’s View** is a streamlined, information-dense display built on top of CRG Scoreboard data, designed specifically for announcers, stream talent, and production crew.
 
 ---
 
