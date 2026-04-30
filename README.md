@@ -45,7 +45,7 @@ Place the **announcers.html** file in your CRG directory:
 
 Open in a browser:
 ```
-http://[CRG-IP-ADDRESS]/custom/views/announcers.html
+http://[CRG-IP-ADDRESS]:8000/custom/views/announcers.html
 ```
 
 ---
