@@ -10,7 +10,8 @@
 
 ---
 
-<img width="690" alt="Thin Mint Announcer's View" src="https://github.com/user-attachments/assets/50975248-a246-4231-8310-722a39a22ba9" />
+<img width="960" alt="Thin Mint Announcer's View" src="https://github.com/user-attachments/assets/3c793d74-e959-4987-8d19-9a21428663ae" />
+
 
 ## Features
 
