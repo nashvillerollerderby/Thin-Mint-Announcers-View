@@ -8,16 +8,18 @@
 
 A clean, fast **announcer interface** for CRG Scoreboard, built for internal use by announcers and production staff.
 
-This view is designed to strip away the noise and surface the information that actually matters on the mic. Instead of digging through multiple panels or chasing data across the screen, everything is organized around how announcers think during a game—who’s jamming, who has lead, who’s in the box, what just happened
+Thin Mint Announcer’s View is a streamlined, information-dense display built on top of CRG Scoreboard data, designed specifically for announcers, stream talent, and production crew.
 
 ---
+
+<img width="690" alt="Thin Mint Announcer's View" src="https://github.com/user-attachments/assets/50975248-a246-4231-8310-722a39a22ba9" />
 
 ## Features
 
 - Real-time CRG Scoreboard data
 - Jam history panel
 - Score differential display
-- Period summary
+- Period summary, including
 - Penalty heat (skaters at elevated risk of fouling out)
 - Light / Dark mode via URL (?theme=)
 
@@ -25,7 +27,7 @@ This view is designed to strip away the noise and surface the information that a
 
 ## Requirements
 
-- CRG Scoreboard running
+- CRG Scoreboard running (v2025.0+)
 - Access to the CRG web interface (typically on port 8000)
 - A modern web browser (Chrome, Edge, Firefox, Safari)
 - Network access to the CRG machine (if not running locally)
