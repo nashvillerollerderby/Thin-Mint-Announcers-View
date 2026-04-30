@@ -519,9 +519,6 @@ body.light
   #rotate-warning{display:flex;}
 }
 
-/* ── 133% baseline viewing scale ──
-   Matches the look of browser zoom set to 133% while preserving the
-   original styled layout and connect screen sizing. */
 :root{
   --baseline-zoom:1.33;
 }
@@ -620,7 +617,7 @@ body:not(.remote) #disc { display: none !important; }
 /* ── Hotkey popups ── */
 .hotkey-modal{display:none;position:fixed;inset:0;z-index:5000;align-items:center;justify-content:center;padding:28px;background:rgba(0,0,0,.62);backdrop-filter:blur(7px)}
 .hotkey-modal.show{display:flex}.hotkey-card{width:min(920px,94vw);max-height:min(86vh,760px);overflow:hidden;display:flex;flex-direction:column;gap:12px;border:1px solid var(--border);border-radius:18px;background:var(--bg2);color:var(--txt);box-shadow:0 22px 70px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.06)}
-.hotkey-card-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:18px 20px 0}.hotkey-title{font-size:24px;line-height:1.05;font-weight:950;letter-spacing:-.035em;text-transform:uppercase}.hotkey-subtitle{margin-top:7px;color:var(--txt2);font-size:13px;line-height:1.4;max-width:70ch}.hotkey-close{border:1px solid var(--border);background:var(--bg3);color:var(--txt);width:34px;height:34px;border-radius:999px;font-size:20px;font-weight:900;line-height:1;cursor:pointer;flex-shrink:0}.hotkey-body{padding:0 20px 20px;overflow-y:auto;min-height:0}.hotkey-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px}.hotkey-mini-card,.penalty-item,.jam-popup-row{border:1px solid var(--border);border-radius:12px;background:var(--bg3);padding:10px 12px}.hotkey-kbd{display:inline-flex;align-items:center;justify-content:center;min-width:28px;height:24px;border-radius:7px;border:1px solid var(--lead-b);background:var(--lead-bg);color:var(--lead-c);font-size:13px;font-weight:950;margin-right:8px}.hotkey-meta{color:var(--txt2);font-size:12px;margin-top:4px;line-height:1.35}.hotkey-link{color:var(--lead-c);text-decoration:none;font-weight:800}.hotkey-footerline{margin-top:14px;padding-top:12px;border-top:1px solid var(--sep);display:flex;justify-content:space-between;gap:12px;color:var(--txt2);font-size:12px;flex-wrap:wrap}.penalty-tabs{display:none;gap:8px;flex-wrap:wrap;margin-bottom:12px;position:sticky;top:0;z-index:2;padding:4px 0 10px;background:transparent}.penalty-tab{border:1px solid var(--border);background:var(--bg3);color:var(--txt);border-radius:999px;padding:7px 12px;font-family:inherit;font-size:12px;font-weight:900;cursor:pointer}.penalty-tab.active{border-color:var(--lead-b);background:var(--lead-bg);color:var(--lead-c)}.penalty-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:8px}.penalty-code{display:inline-flex;align-items:center;justify-content:center;min-width:30px;height:28px;border-radius:8px;background:var(--lead-bg);color:var(--lead-c);border:1px solid var(--lead-b);font-weight:950;margin-right:8px}.penalty-note{margin:0 0 12px;color:var(--txt2);font-size:12px;line-height:1.45}.jam-popup-list{display:flex;flex-direction:column;gap:8px}.jam-popup-row{display:grid;grid-template-columns:52px 110px auto 95px;gap:10px;align-items:center}.jam-popup-score{font-size:18px;font-weight:950;font-variant-numeric:tabular-nums}.jam-popup-detail{color:var(--txt2);font-size:12px;line-height:1.3}@media(max-width:700px){.jam-popup-row{grid-template-columns:1fr;gap:4px}.hotkey-card-header{padding:15px 16px 0}.hotkey-body{padding:0 16px 16px}}
+.hotkey-card-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:18px 20px 0}.hotkey-title{font-size:24px;line-height:1.05;font-weight:950;letter-spacing:-.035em;text-transform:uppercase}.hotkey-subtitle{margin-top:7px;margin-bottom:14px;color:var(--txt2);font-size:13px;line-height:1.4;max-width:70ch}.hotkey-close{border:1px solid var(--border);background:var(--bg3);color:var(--txt);width:34px;height:34px;border-radius:999px;font-size:20px;font-weight:900;line-height:1;cursor:pointer;flex-shrink:0}.hotkey-body{padding:0 20px 20px;overflow-y:auto;min-height:0}.hotkey-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px}.hotkey-mini-card,.penalty-item,.jam-popup-row{border:1px solid var(--border);border-radius:12px;background:var(--bg3);padding:10px 12px}.hotkey-kbd{display:inline-flex;align-items:center;justify-content:center;min-width:28px;height:24px;border-radius:7px;border:1px solid var(--lead-b);background:var(--lead-bg);color:var(--lead-c);font-size:13px;font-weight:950;margin-right:8px}.hotkey-meta{color:var(--txt2);font-size:12px;margin-top:4px;line-height:1.35}.hotkey-link{color:var(--lead-c);text-decoration:none;font-weight:800}.hotkey-footerline{margin-top:14px;padding-top:12px;border-top:1px solid var(--sep);display:flex;justify-content:space-between;gap:12px;color:var(--txt2);font-size:12px;flex-wrap:wrap}.penalty-tabs{display:none;gap:8px;flex-wrap:wrap;margin-bottom:12px;position:sticky;top:0;z-index:2;padding:4px 0 10px;background:transparent}.penalty-tab{border:1px solid var(--border);background:var(--bg3);color:var(--txt);border-radius:999px;padding:7px 12px;font-family:inherit;font-size:12px;font-weight:900;cursor:pointer}.penalty-tab.active{border-color:var(--lead-b);background:var(--lead-bg);color:var(--lead-c)}.penalty-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:8px}.penalty-code{display:inline-flex;align-items:center;justify-content:center;min-width:30px;height:28px;border-radius:8px;background:var(--lead-bg);color:var(--lead-c);border:1px solid var(--lead-b);font-weight:950;margin-right:8px}.penalty-note{margin:0 0 12px;color:var(--txt2);font-size:12px;line-height:1.45}.jam-popup-list{display:flex;flex-direction:column;gap:8px}.jam-popup-row{display:grid;grid-template-columns:52px 110px auto 95px;gap:10px;align-items:center}.jam-popup-score{font-size:18px;font-weight:950;font-variant-numeric:tabular-nums}.jam-popup-detail{color:var(--txt2);font-size:12px;line-height:1.3}@media(max-width:700px){.jam-popup-row{grid-template-columns:1fr;gap:4px}.hotkey-card-header{padding:15px 16px 0}.hotkey-body{padding:0 16px 16px}}
 
 
 /* Full-history overlay uses the same compact row language as the main jam history. */
@@ -660,11 +657,6 @@ body:not(.remote) #disc { display: none !important; }
 }
 
 
-
-
-
-
-/* About overlay footer layout fix */
 #modal-about .hotkey-body{
   padding-bottom:24px;
 }
@@ -698,10 +690,6 @@ body:not(.remote) #disc { display: none !important; }
   }
 }
 
-
-/* ── About overlay footer final cleanup ──
-   Footer lives outside .hotkey-body, so it needs its own padding.
-   This removes the stray divider line and prevents bottom clipping. */
 #modal-about .hotkey-card{
   gap:0;
 }
@@ -739,6 +727,88 @@ body:not(.remote) #disc { display: none !important; }
   #modal-about #tmav-credit-version{
     text-align:left;
   }
+}
+
+/* ── Main view footer ── */
+.tmav-footer{
+  flex:0 0 auto;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  padding:0 2px;
+  min-height:12px;
+
+  font-size:9px;
+  line-height:1;
+  color:var(--txt3);
+  white-space:nowrap;
+  overflow:hidden;
+
+  opacity:.65;
+  transition:opacity .2s ease;
+}
+
+.tmav-footer:hover,
+.tmav-footer:focus-within{
+  opacity:1;
+}
+
+.tmav-footer-left,
+.tmav-footer-right{
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.tmav-footer-left{
+  font-weight:650;
+}
+
+.tmav-footer-right{
+  text-align:right;
+}
+
+/* ── Jam history overlay controls/separators ── */
+.history-header-actions{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex-shrink:0;
+}
+.history-clear-btn{
+  border:1px solid var(--border);
+  background:var(--bg3);
+  color:var(--txt2);
+  border-radius:999px;
+  padding:7px 12px;
+  font-family:inherit;
+  font-size:11px;
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:.07em;
+  cursor:pointer;
+}
+.history-clear-btn:hover{
+  color:var(--txt);
+  border-color:var(--lost-b);
+}
+.history-period-separator{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin:4px 0 0;
+  color:var(--txt2);
+  font-size:11px;
+  font-weight:950;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+}
+.history-period-separator::before,
+.history-period-separator::after{
+  content:"";
+  height:1px;
+  background:var(--sep);
+  flex:1;
 }
 
 </style>
@@ -991,12 +1061,22 @@ body:not(.remote) #disc { display: none !important; }
     </div>
   </div>
 
+<!-- ── FOOTER ── -->
+<div class="tmav-footer">
+  <div class="tmav-footer-left">
+    🟤 Thin Mint Announcer's View | v1.0.0
+  </div>
+  <div class="tmav-footer-right">
+    [A] About | [H] Jam History | [P] Penalty Codes | [D] Dark/Light Mode
+  </div>
+</div>
+
 </div><!-- /app -->
 
 
 <!-- Hotkey popups -->
-<div class="hotkey-modal" id="modal-about" aria-hidden="true"><div class="hotkey-card" role="dialog" aria-modal="true" aria-labelledby="about-title"><div class="hotkey-card-header"><div><div class="hotkey-title" id="about-title">🟤 Thin Mint Announcer's View</div><div class="hotkey-subtitle">A compact, trackside CRG readout for announcers: clocks, score, lineups, jammer status, penalty heat, jam history, and the quick reference bits you need while the game is moving.</div></div><button class="hotkey-close" type="button" data-close-modal aria-label="Close">×</button></div><div class="hotkey-body"><div class="hotkey-grid"><div class="hotkey-mini-card"><span class="hotkey-kbd">A</span><strong>About</strong><div class="hotkey-meta">Shows this help and version screen.</div></div><div class="hotkey-mini-card"><span class="hotkey-kbd">H</span><strong>Jam History</strong><div class="hotkey-meta">Shows the full saved jam history for the current period.</div></div><div class="hotkey-mini-card"><span class="hotkey-kbd">P</span><strong>Penalty Codes</strong><div class="hotkey-meta">Shows the penalty code reference for the active CRG ruleset.</div></div><div class="hotkey-mini-card"><span class="hotkey-kbd">D</span><strong>Dark / Light</strong><div class="hotkey-meta">Toggles the announcer view between dark mode and light mode.</div></div></div></div><div class="hotkey-footerline about-footerline"><span class="about-license">Licensed under <a class="hotkey-link" href="https://www.gnu.org/licenses/gpl-3.0.en.html" target="_blank" rel="noopener">GNU GPL v3.0</a></span><span id="tmav-credit-version">Another ✨Thinmintovation✨ | v1.0.0</span></div></div></div></div>
-<div class="hotkey-modal" id="modal-history" aria-hidden="true"><div class="hotkey-card" role="dialog" aria-modal="true" aria-labelledby="history-title"><div class="hotkey-card-header"><div><div class="hotkey-title" id="history-title">Jam History</div><div class="hotkey-subtitle" id="history-subtitle">Current period</div></div><button class="hotkey-close" type="button" data-close-modal aria-label="Close">×</button></div><div class="hotkey-body"><div class="jam-popup-list" id="history-popup-list"></div></div></div></div>
+<div class="hotkey-modal" id="modal-about" aria-hidden="true"><div class="hotkey-card" role="dialog" aria-modal="true" aria-labelledby="about-title"><div class="hotkey-card-header"><div><div class="hotkey-title" id="about-title">🟤 Thin Mint Announcer's View</div><div class="hotkey-subtitle">A compact, trackside CRG readout for announcers: clocks, score, lineups, jammer status, penalty heat, jam history, and the quick reference bits you need while the game is moving. Helps announcers to not just call the plays, but tell the story.</div></div><button class="hotkey-close" type="button" data-close-modal aria-label="Close">×</button></div><div class="hotkey-body"><div class="hotkey-grid"><div class="hotkey-mini-card"><span class="hotkey-kbd">A</span><strong>About</strong><div class="hotkey-meta">Shows this help and version screen.</div></div><div class="hotkey-mini-card"><span class="hotkey-kbd">H</span><strong>Jam History</strong><div class="hotkey-meta">Shows the full saved jam history for the game, separated by period.</div></div><div class="hotkey-mini-card"><span class="hotkey-kbd">P</span><strong>Penalty Codes</strong><div class="hotkey-meta">Shows the penalty code reference for the active CRG ruleset.</div></div><div class="hotkey-mini-card"><span class="hotkey-kbd">D</span><strong>Dark / Light</strong><div class="hotkey-meta">Toggles the announcer view between dark mode and light mode.</div></div></div></div><div class="hotkey-footerline about-footerline"><span class="about-license">Licensed under <a class="hotkey-link" href="https://www.gnu.org/licenses/gpl-3.0.en.html" target="_blank" rel="noopener">GNU GPL v3.0</a></span><span id="tmav-credit-version">Another ✨Thinmintovation✨ | v1.0.0</span></div></div></div></div>
+<div class="hotkey-modal" id="modal-history" aria-hidden="true"><div class="hotkey-card" role="dialog" aria-modal="true" aria-labelledby="history-title"><div class="hotkey-card-header"><div><div class="hotkey-title" id="history-title">Jam History</div><div class="hotkey-subtitle" id="history-subtitle">Full game history</div></div><div class="history-header-actions"><button class="history-clear-btn" type="button" id="clear-history-btn">Clear History</button><button class="hotkey-close" type="button" data-close-modal aria-label="Close">×</button></div></div><div class="hotkey-body"><div class="jam-popup-list" id="history-popup-list"></div></div></div></div>
 <div class="hotkey-modal" id="modal-penalties" aria-hidden="true"><div class="hotkey-card" role="dialog" aria-modal="true" aria-labelledby="penalty-title"><div class="hotkey-card-header"><div><div class="hotkey-title" id="penalty-title">Penalty Codes</div><div class="hotkey-subtitle">Quick announcer reference. Ruleset is auto-detected from the active CRG game.</div></div><button class="hotkey-close" type="button" data-close-modal aria-label="Close">×</button></div><div class="hotkey-body"><div class="penalty-tabs" id="penalty-tabs"></div><p class="penalty-note" id="penalty-note"></p><div class="penalty-list" id="penalty-list"></div></div></div></div>
 
 <!-- Disconnect overlay -->
@@ -1049,10 +1129,10 @@ let jamLapState = {
   2: { shown:false, lap:0, lastTrip:0, points:0 }
 };
 let currentJamStarPassTeam = 0;                 // records which team completed a star pass this jam
-let trackedPeriod = 1;             // reset powerJams/starPasses when period changes
+let trackedPeriod = 1;             // period currently shown in the Period Summary panel
 let lastGameSignature = localStorage.getItem('tm-announcer-game-signature') || '';
 let newGameCleared = false;
-const MAX_HIST = 80;
+const MAX_HIST = 60;
 const CG = 'ScoreBoard.CurrentGame.';
 const JAM_HISTORY_KEY = 'tm-announcer-jam-history';
 
@@ -1078,6 +1158,36 @@ function loadJamHistory() {
 function clearJamHistory() {
   jamHistory = [];
   try { localStorage.removeItem(JAM_HISTORY_KEY); } catch (_) {}
+}
+
+function resetPeriodSummaryStats(p, clearHistory = false) {
+  powerJams = {1: 0, 2: 0};
+  prevJammerBox = {1: false, 2: false};
+  starPasses = {1: 0, 2: 0};
+  prevStarPass = {1: false, 2: false};
+  currentJamLostLead = {1: false, 2: false};
+  hadLeadThisJam = {1: false, 2: false};
+  currentJamStarPassTeam = 0;
+  resetJamLapState();
+  trackedPeriod = p;
+  if (clearHistory) {
+    clearJamHistory();
+  }
+}
+
+function shouldAdvanceSummaryPeriod(curPeriod, upcomingJam, nowInJam) {
+  if (curPeriod <= trackedPeriod) return false;
+
+  // CRG can flip CurrentPeriodNumber before the next period actually starts.
+  // Keep showing the prior period's summary until Jam 1 of the new period is live.
+  if (nowInJam && upcomingJam === 1) return true;
+
+  // If the view opens after Jam 1 already happened, catch up instead of
+  // getting stuck on the previous period.
+  if (upcomingJam > 1) return true;
+  if (jamHistory.some(j => j.p === curPeriod)) return true;
+
+  return false;
 }
 
 function gameSignature() {
@@ -1109,7 +1219,7 @@ function maybeClearHistoryForNewGame() {
   const signatureChanged = lastGameSignature && sig !== lastGameSignature;
 
   if ((signatureChanged || looksFresh) && jamHistory.length && !newGameCleared) {
-    clearJamHistory();
+    resetPeriodSummaryStats(p, true);
     newGameCleared = true;
   }
 
@@ -1628,7 +1738,7 @@ function histHtml() {
 
 // period summary
 function renderPeriod() {
-  const p = vn('CurrentPeriodNumber', 1);
+  const p = trackedPeriod;
   txt('per-lbl', `Period ${p} summary`);
 
   txt('per-t1-pj', powerJams[1]);
@@ -1742,20 +1852,12 @@ function applyState(updates) {
   }
   if (wasInJam && !nowInJam) captureJam(jammerSnap);
 
-  // Reset power jam counts when period changes
+  // Advance the Period Summary only when Jam 1 of the new period actually starts.
+  // This keeps Period 1 Summary visible through halftime and Period 2 lineup.
   const curPeriod = vn('CurrentPeriodNumber', 1);
-  if (curPeriod !== trackedPeriod) {
-    powerJams = {1: 0, 2: 0};
-    prevJammerBox = {1: false, 2: false};
-    starPasses = {1: 0, 2: 0};
-    prevStarPass = {1: false, 2: false};
-    currentJamLostLead = {1: false, 2: false};
-    hadLeadThisJam = {1: false, 2: false};
-    currentJamStarPassTeam = 0;
-    resetJamLapState();
-    trackedPeriod = curPeriod;
-    jamHistory = [];
-    saveJamHistory();
+  const upcomingJamForSummary = vn('UpcomingJamNumber', 0);
+  if (shouldAdvanceSummaryPeriod(curPeriod, upcomingJamForSummary, nowInJam)) {
+    resetPeriodSummaryStats(curPeriod, false);
   }
 
   // Detect jammer box transitions (false → true): awards a power jam to the OTHER team.
@@ -2208,7 +2310,28 @@ function toggleModal(id){
   openModal(id);
 }
 function closeModals(){document.querySelectorAll('.hotkey-modal.show').forEach(m=>{m.classList.remove('show');m.setAttribute('aria-hidden','true');});}
-function renderHistoryPopup(){const p=vn('CurrentPeriodNumber',1);const rows=jamHistory.filter(j=>Number(j.p)===Number(p)).slice().sort((a,b)=>b.jamN-a.jamN);txt('history-subtitle',`Period ${p} · ${rows.length||0} saved jam${rows.length===1?'':'s'}`);const list=el('history-popup-list');if(!list)return;if(!rows.length){list.innerHTML='<div class="hotkey-mini-card"><strong>No jams saved yet.</strong><div class="hotkey-meta">History will populate as jams end.</div></div>';return;}list.innerHTML=rows.map((j,i)=>jamHistoryRowHtml(j,i,'jam-popup-fullrow')).join('');}
+function renderHistoryPopup(){
+  const rows = jamHistory.slice().sort((a,b)=>{
+    const ap = Number(a.p) || 0, bp = Number(b.p) || 0;
+    if (bp !== ap) return bp - ap;
+    return (Number(b.jamN)||0) - (Number(a.jamN)||0);
+  });
+  txt('history-subtitle',`Full game · ${rows.length||0} saved jam${rows.length===1?'':'s'} · cap ${MAX_HIST}`);
+  const list=el('history-popup-list');
+  if(!list)return;
+  if(!rows.length){
+    list.innerHTML='<div class="hotkey-mini-card"><strong>No jams saved yet.</strong><div class="hotkey-meta">History will populate as jams end.</div></div>';
+    return;
+  }
+  let lastPeriod = null;
+  let rowIndex = 0;
+  list.innerHTML = rows.map(j=>{
+    const period = Number(j.p) || 0;
+    const sep = period !== lastPeriod ? `<div class="history-period-separator">Period ${escHtml(period || '—')}</div>` : '';
+    lastPeriod = period;
+    return sep + jamHistoryRowHtml(j,rowIndex++,'jam-popup-fullrow');
+  }).join('');
+}
 function detectedPenaltyRuleset(){
   const name=v('RulesetName','').toUpperCase();
   if(name.includes('RDCL'))return 'RDCL';
@@ -2229,7 +2352,13 @@ function renderPenaltyPopup(){
   const list=el('penalty-list');
   if(list){list.innerHTML=data.codes.map(([code,label])=>`<div class="penalty-item"><span class="penalty-code">${escHtml(code)}</span><strong>${escHtml(label)}</strong></div>`).join('');}
 }
-document.addEventListener('click',e=>{const closeBtn=e.target.closest('[data-close-modal]');if(closeBtn)closeModals();if(e.target.classList&&e.target.classList.contains('hotkey-modal'))closeModals();});
+
+function clearHistoryFromPopup(){
+  clearJamHistory();
+  render();
+  renderHistoryPopup();
+}
+document.addEventListener('click',e=>{const clearBtn=e.target.closest('#clear-history-btn');if(clearBtn){clearHistoryFromPopup();return;}const closeBtn=e.target.closest('[data-close-modal]');if(closeBtn)closeModals();if(e.target.classList&&e.target.classList.contains('hotkey-modal'))closeModals();});
 document.addEventListener('keydown',e=>{const tag=(e.target&&e.target.tagName||'').toLowerCase();if(tag==='input'||tag==='textarea'||e.target?.isContentEditable)return;const key=e.key.toLowerCase();if(key==='escape'){closeModals();return;}if(key==='a'){e.preventDefault();toggleModal('modal-about');}if(key==='h'){e.preventDefault();toggleModal('modal-history');}if(key==='p'){e.preventDefault();toggleModal('modal-penalties');}
   if (key === 'd') { toggleTheme(); return; }
 });
