@@ -1,32 +1,62 @@
 # 🟤 Thin Mint Announcer's View
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
-[![Compatible with CRG](https://img.shields.io/badge/CRG%20ScoreBoard-compatible-blue.svg)](https://github.com/rollerderby/crg)
+[![Compatible with CRG](https://img.shields.io/badge/CRG%20ScoreBoard-v2025%2B-blue.svg)](https://github.com/rollerderby/crg)
 [![HTML5](https://img.shields.io/badge/HTML5-pure--client-orange.svg)](https://developer.mozilla.org/en-US/docs/Web/HTML)
 [![Maintenance](https://img.shields.io/badge/maintained-yes-brightgreen.svg)](./)
 ![Trans Rights](https://pride-badges.pony.workers.dev/static/v1?label=trans%20rights&stripeWidth=6&stripeColors=5BCEFA,F5A9B8,FFFFFF,F5A9B8,5BCEFA)
 
-**Thin Mint Announcer’s View** is a streamlined, information-dense display built on top of CRG Scoreboard data, designed specifically for announcers, stream talent, and production crew.
+**Thin Mint Announcer’s View** is a streamlined, information-dense display built on top of CRG ScoreBoard data, designed specifically for announcers, stream talent, and production crew.
 
 ---
 
 <img width="960" alt="Thin Mint Announcer's View" src="https://github.com/user-attachments/assets/3c793d74-e959-4987-8d19-9a21428663ae" />
 
+---
 
 ## Features
 
-- Real-time CRG Scoreboard data
-- Jam history panel
-- Score differential display
-- Period summary, including
-- Penalty heat (skaters at elevated risk of fouling out)
-- Light / Dark mode via URL (?theme=)
+- Real-time CRG ScoreBoard data
+- Scores, lead jammer, and power jam indicators
+- Full lineup display (jammer + blockers)
+- Timeout tracking
+- Score differential with leader indicator
+
+- **Inside Track (Context Engine)**
+  - Surfaces scoring runs, droughts, lead changes, and momentum shifts
+  - Quiet during jams, active during lineups/timeouts
+  - Includes archive/history view
+
+- **Jam History**
+  - Recent jam summaries in main view
+  - Full history overlay
+  - Export to text file (.txt)
+  - Period-separated breakdown
+
+- **Penalty Tracking**
+  - Shows penalty code and time left in box
+  - Penalty heat (skaters at risk of fouling out)
+  - Visual escalation for high penalty counts (⚠️)
+
+- **Flexible Controls**
+  - Keyboard hotkeys
+  - Touch-friendly command dock for tablets
+
+- **Network-Aware Connection**
+  - Auto-connects when served from CRG
+  - Works across devices via CRG machine IP
+  - Remote Mode supported (no install required)
+
+- **Theme Support**
+  - Light / Dark mode via URL:
+    - `?theme=dark`
+    - `?theme=light`
 
 ---
 
 ## Requirements
 
-- CRG Scoreboard running (v2025.0+)
+- CRG ScoreBoard running (**v2025.0+**)
 - Access to the CRG web interface (typically on port 8000)
 - A modern web browser (Chrome, Edge, Firefox, Safari)
 - Network access to the CRG machine (if not running locally)
@@ -36,8 +66,9 @@
 ## Installation
 
 Place the **announcers.html** file in your CRG directory:
+
 ```
-/html/custom/views/announcers.html
+/html/custom/view/announcers.html
 ```
 
 ---
@@ -45,21 +76,61 @@ Place the **announcers.html** file in your CRG directory:
 ## Usage
 
 Open in a browser:
+
 ```
-http://[CRG-IP-ADDRESS]:8000/custom/views/announcers.html
+http://[CRG-IP-ADDRESS]:8000/custom/view/announcers.html
 ```
 
 ---
 
-## Theme
+## Remote Mode
 
-The announcer view supports light and dark modes, which can be set using a URL parameter. This is especially useful when embedding the view in a browser tab or bookmarking a preferred look for different environments.
+You can run the view without installing it on CRG:
 
-To set the theme, append one of the following to the URL:
-```
-?theme=dark
-?theme=light
-```
+1. Open the HTML file in your browser  
+2. Append `?mode=remote` to the URL  
+   - Example:
+     ```
+     file:///Users/you/announcers.html?mode=remote
+     ```
+3. Reload the page  
+4. Enter the CRG IP address  
+5. Connect  
+
+---
+
+## Controls
+
+| Key | Action |
+|-----|--------|
+| A | About / Help |
+| J | Jam History |
+| P | Penalty Codes |
+| X | Penalty Detail |
+| T | Inside Track History |
+| I | Mute Inside Track |
+| D | Toggle Light/Dark Mode |
+
+---
+
+## Tablet Usage
+
+- Use **landscape orientation**
+- Minimum supported device: **iPad Mini**
+- Phones are intentionally unsupported
+
+---
+
+## Design Philosophy
+
+Thin Mint Announcer’s View is built around a simple idea:
+
+> Announcers should focus on the story, not the data.
+
+- CRG is the **source of truth**
+- The UI should never obstruct gameplay awareness
+- Insights assist, not overwhelm
+- Silence during jams is intentional
 
 ---
 
@@ -79,15 +150,16 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 
 Designed and developed by:
 
-- Haley "Thin Mint" Stelly
-- Charlie "KO Belle" Humphreys
-- Hannah Keyser
+- Haley "Thin Mint" Stelly  
+- Charlie "KO Belle" Humphreys  
+- Hannah Keyser  
 
 Special thanks to the following individuals and leagues for their inspiration and assistance:
 
-- [**Michi-chan**](https://www.michichan.com/)
-- **Nashville Roller Derby**
-- **Clarksville Roller Derby**
+- [**Michi-chan**](https://www.michichan.com/)  
+- **Texas Rollergirls**
+- **Nashville Roller Derby**  
+- **Clarksville Roller Derby**  
 
 ---
 
@@ -107,4 +179,4 @@ See [CHANGELOG.md](CHANGELOG.md) for a full history of releases.
 
 ## Acknowledgements
 
-Built on top of [CRG Scoreboard](https://github.com/rollerderby/crg) by the CRG project contributors.
+Built on top of [CRG ScoreBoard](https://github.com/rollerderby/crg) by the CRG project contributors.
