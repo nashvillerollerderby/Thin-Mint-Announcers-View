@@ -10,13 +10,13 @@
 
 ---
 
-<img width="960" alt="Thin Mint Announcer's View" src="https://github.com/user-attachments/assets/3c793d74-e959-4987-8d19-9a21428663ae" />
+<img width="960" alt="Thin Mint Announcer's View" src="https://github.com/user-attachments/assets/48222804-110d-4e22-a836-b0c5ec21a9d5" />
 
 ---
 
 ## Features
 
-- Real-time CRG ScoreBoard data
+- Real-time CRG Scoreboard data
 - Scores, lead jammer, and power jam indicators
 - Full lineup display (jammer + blockers)
 - Timeout tracking
