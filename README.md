@@ -47,11 +47,6 @@
   - Works across devices via CRG machine IP
   - Remote Mode supported (no install required)
 
-- **Theme Support**
-  - Light / Dark mode via URL:
-    - `?theme=dark`
-    - `?theme=light`
-
 ---
 
 ## Requirements
