@@ -6,6 +6,20 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [1.3.5] - 2026-05-07
+
+### Added
+- Jammer stats popup: tap/click any jammer name in the lineup to open a per-skater stats panel
+- Jammer stats panel displays: skater number, name, team, jams played, pts for, pts against, avg pts/jam, lead %, net differential, and top-3 team/game ranking indicators (🥇🥈🥉)
+- Jam log in stats panel shows each jam the jammer has played with pts for/against, opposing jammer name, running head-to-head context (pts against that jammer / H2H differential), power jam indicator (⚡ PJ / ⚡ Opp), lead badge, star pass badge, penalty codes, and jam outcome
+- Penalty codes per jam resolved from CRG skater penalty tree (matched by period and jam number)
+- Clickable lead jammer names in the recent jam history strip and full history popup — opens the jammer stats panel directly
+
+### Changed
+- Increased tablet touch dock button size (height 28px → 40px, font 10px → 13px) for easier tapping trackside
+
+---
+
 ## [1.3.4] - 2026-05-05
 
 ### Added
